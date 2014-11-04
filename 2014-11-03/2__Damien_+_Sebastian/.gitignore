@@ -1,0 +1,10 @@
+# IDEA files
+/.idea/
+atlassian-ide-plugin.xml
+*.iml
+*.iws
+*.iwp
+
+# Node
+/node_modules/
+npm-debug.log

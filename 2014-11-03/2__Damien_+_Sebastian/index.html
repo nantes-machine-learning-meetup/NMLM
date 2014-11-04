@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Le traitement automatique du langage naturel (TALN) à l'heure du Big Data</title>
+
+    <meta name="description" content="Le traitement automatique du langage naturel (TALN) à l'heure du Big Data">
+    <meta name="author" content="Damien Raude-Morvan et Sebastián Peña Saldarriaga">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="data/dictanova.css">
+</head>
+
+<body>
+
+<div class="reveal">
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+<section>
+    <h1>TALN et Machine Learning</h1>
+
+    <h3>à l'épreuve des actualités</h3>
+
+    <p>
+        <small>Par <a href="http://www.drazzib.com">Damien Raude-Morvan</a>
+            et <a href="http://www.dictanova.com">Sebastián Peña Saldarriaga</a></small>
+    </p>
+
+    <p><small><a href="http://www.meetup.com/Nantes-Machine-Learning-Meetup/">Nantes Machine Learning Meetup</a> - 03 novembre 2014</small></p>
+</section>
+
+<section>
+    <h1>Agenda</h1>
+
+    <ul>
+        <li>Présentation de Dictanova<br/>
+            <small>Historique, produits et équipe</small></li>
+        <li>Introduction au <i>TALN</i><br/>
+            <small>Traitement Automatique du Langage Naturel</small></li>
+        <li>Retour d'expérience
+	  <ul>
+	    <li>Détection de raisons sociales dans les actualités<br/>
+	    <small>Traitement des raisons sociales ?</small></li>
+	    <li>Machine Learning<br/>
+	    <small>Classification binaire et apprentissage supervisé</small></li>
+	  </ul>
+	</li>
+    </ul>
+</section>
+
+<section>
+    <section>
+        <h1>Speakers</h1>
+    </section>
+
+    <section>
+        <h2>Damien Raude-Morvan</h2>
+        <img width="200" height="200" src="data/damien_round.png" alt="Damien Raude-Morvan" class="bless toleft"/>
+        <ul style="display: block; padding-left: 250px;">
+            <li>Responsable technique de Dictanova</li>
+            <li><a href="https://twitter.com/drazzib">
+                <img src="data/twitter-icon.gif" alt="Logo Twitter" class="bless"/>
+                @drazzib
+            </a> / <a href="http://fr.linkedin.com/in/damienraudemorvan">
+                <img src="data/linkedin-icon.png" alt="Logo LinkedIn" class="bless"/>
+                draudemorvan
+            </a> / <a href="http://www.damien-raude-morvan.com/">CV</a></li>
+            <li>Contributeur à <ul>
+                <li><a href="http://qa.debian.org/developer.php?login=drazzib">Debian GNU/Linux</a></li>
+                <li>Apache <a href="http://gora.apache.org">Gora</a></li>
+                <li><a href="https://github.com/drazzib">+++</a></li>
+            </ul></li>
+            <li>Enseignant vacataire à l'<a href="http://www.univ-nantes.fr">Université de Nantes</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>Sebastián Peña Saldarriaga</h2>
+        <img width="200" height="200" src="data/sebastian_round.png" alt="Sebastián Peña Saldarriaga" class="bless toleft"/>
+        <ul style="display: block; padding-left: 250px;">
+            <li>Responsable R&amp;D de Dictanova</li>
+            <li>Docteur en Informatique (2010)
+                <ul><li>Spécialiste du TALN</li></ul></li>
+            <li> <a href="http://fr.linkedin.com/pub/sebastián-peña-saldarriaga/61/aa9/79">
+                <img src="data/linkedin-icon.png" alt="Logo LinkedIn" class="bless"/>
+                sebastián-peña-saldarriaga
+            </a></li>
+        </ul>
+    </section>
+
+    <section>
+    <h1>Dictanova</h1>
+    </section>
+
+    <section>
+        <h2>Fiche d'identité</h2>
+        <ul>
+            <li>Dictanova <i>SAS</i> fondée en décembre 2011</li>
+            <li>7 salarié(e)s + 1 apprenti(e)s + 3 stagiair(e)s</li>
+            <li>Hébergée dans les locaux du <a href="http://www.lina.univ-nantes.fr/">LINA</a></li>
+        </ul>
+        <img width="400" height="265" src="data/lina-new.jpg" alt="Vue du LINA"
+             class="bless">
+    </section>
+
+    <section>
+        <h2>Nos métiers</h2>
+        <h3><i>savoir faire</i></h3>
+
+        <p>Éditeur de briques logicielles</p>
+        <ul>
+            <li>Collecter des masses de données textuelles (web, etc.)</li>
+            <li>Structurer des données textuelles (opinions, thématiques, entités nommées, etc.)</li>
+            <li>Explorer les résultats (restitutions visuelles, analyses)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4><i>Quelles technologies supportent notre coeur de métier ?</i></h4>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>TAL(N)</h1>
+        <h3>Traitement automatique du langage (naturel)</h3>
+    </section>
+
+    <section>
+        <h2>TAL(N)</h2>
+        <ul>
+            <li>Entre informatique et linguistique</li>
+            <li>Compréhension et génération de la langue naturelle</li>
+            <li>En rapport avec les sciences cognitives</li>
+            <li>Mais surtout avec l'aide de l'intelligence artificielle (ML !)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Applications</h2>
+        <ul>
+            <li>Recherche d'information</li>
+            <li>Correction orthographique</li>
+			<li>Résumé automatique</li>
+            <li>OCR et reco de la parole</li>
+			<li>Synthèse vocale</li>
+			<li>Traduction automatique</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Niveaux d'analyse</h2>
+        <ul>
+            <li>Lexical</li>
+            <li>Syntaxique</li>
+            <li>Sémantique</li>
+            <li>Pragmatique</li>
+        </ul>
+    </section>
+
+    <section>
+		<h2>Niveau lexical</h2><br><br>
+		<table class="reveal">
+		<tr>
+			<td>La</td>
+			<td>fraise</td>
+			<td>est</td>
+			<td>sur</td>
+			<td>la</td>
+			<td>table</td>
+			<td>de</td>
+			<td>l'</td>
+			<td>avocat</td>
+		</tr>
+		</table>
+    </section>
+
+    <section>
+		<h2>Niveau syntaxique</h2><br><br>
+		<table class="reveal">
+		<tr>
+			<td>La</td>
+			<td>fraise</td>
+			<td>est</td>
+			<td>sur</td>
+			<td>la</td>
+			<td>table</td>
+			<td>de</td>
+			<td>l'</td>
+			<td>avocat</td>
+		</tr>
+		<tr>
+			<td>DET</td>
+			<td>N</td>
+			<td>V</td>
+			<td>PREP</td>
+			<td>DET</td>
+			<td>N</td>
+			<td>PREP</td>
+			<td>DE</td>
+			<td>N</td>
+		</tr>
+
+		</table>
+    </section>
+
+    <section>
+		<h2>Niveau sémantique<br>pragmatique</h2><br><br>
+		<table class="reveal">
+		<tr>
+			<td>La</td>
+			<td>fraise</td>
+			<td>est</td>
+			<td>sur</td>
+			<td>la</td>
+			<td>table</td>
+			<td>de</td>
+			<td>l'</td>
+			<td>avocat</td>
+		</tr>
+		<tr>
+			<td>DET</td>
+			<td>N</td>
+			<td>V</td>
+			<td>PREP</td>
+			<td>DET</td>
+			<td>N</td>
+			<td>PREP</td>
+			<td>DET</td>
+			<td>N</td>
+		</tr>
+		</table>
+		<img height="150" src="data/fraise.jpg" alt="Fraise à métaux" style="display:inline; float:left; border:none; background:none; box-shadow:none;">
+		&nbsp;<img height="150" src="data/strawberry.jpg" alt="Fraise à métaux" style="display:inline; float:left; border:none; background:none; box-shadow:none;">
+		&nbsp;<img height="150" src="data/table-ycc.jpg" alt="Table" style="display:inline; float:left; border:none; background:none; box-shadow:none;">
+		&nbsp;<img height="150" src="data/french-lawyer.png" alt="Avocat (métier)" style="display:inline; float:left; border:none; background:none; box-shadow:none;">
+		<img height="150" src="data/avocado.jpeg" alt="Avocat (fruit)" style="display:inline; float:left; border:none; background:none; box-shadow:none;">
+    </section>
+
+    <section>
+        <h2>Extraire des informations</h2>
+    </section>
+
+    <section>
+        <h3>Reconnaissance d'entités nommées</h3>
+        <ul>
+            <li>Objets textuels avec une fonction particulière</li>
+            <li>Noms de personnes, noms d'organisation, toponymes, dates, unités monétaires, etc.</li>
+        </ul>
+		<blockquote>Le test a été organisé <span style="color:orange">[samedi 7 juin DATE]</span> par la <span style="color:orange">[Royal Society ORG]</span> et mettait en compétition 5 programmes.
+		Les juges comprenaient notamment <span style="color:orange">[Lord Sharkey PERS]</span> qui a mené avec succès la campagne pour la réhabilitation et le pardon d' <span style="color:orange">[Alan Turing PERS]</span>.</blockquote>
+    </section>
+
+	<section>
+        <h3>Pour aller plus loin</h3>
+        <ul>
+            <li>Christopher D. Manning, Hinrich Schütze: Foundations of Statistical Natural Language Processing, MIT Press (1999)</li>
+            <li class="fragment roll-in">Jurafsky, D., &amp; Martin, J. H.: Speech and language processing: An introduction to natural language processing, computational linguistics, and speech recognition, Prentice Hall (2009)</li>
+            <li class="fragment roll-in">Coursera : <a href="https://www.coursera.org/course/nlp">https://www.coursera.org/course/nlp</a></li>
+            <li class="fragment roll-in">Resources en français : <a href="http://lmgtfy.com/?q=introduction+au+TALN">http://lmgtfy.com/?q=introduction+au+TALN</a></li>
+        </ul>
+    </section>
+
+    <section>
+        <h4><i>Comment savoir si un segment textuel est <br/> une entitée nommée (ou pas) ?</i></h4>
+    </section>
+</section>
+
+<section>
+    <section>
+        <h1>Machine Learning</h1>
+        <h3>Ou comment nous nous sommes retrouvés à faire des statistiques binaires</h3>
+    </section>
+
+    <section>
+        <h2>Qu'est-ce le machine learning ?</h2>
+
+        <ul>
+        <li>Le machine learning (<i>apprentissage automatique</i> en anglais)</li>
+        <li>Développement de méthodes automatiques permettant à une machine d'évoluer grâce à un processus d'apprentissage
+        <li>Effectuer des tâches qu'il est difficile ou impossible de remplir par des moyens algorithmiques plus classiques.</li></ul>
+    </section>
+
+	<section>
+        <h2>Le ML réduit à sa plus simple expression opérationnelle</h2>
+
+        <ul>
+        <li>Répondre oui ou non</li>
+        <li>À une question fermée
+        <li>Pour peu qu'elle ait été bien posée !</li>
+        <li class="fragment roll-in">Classification binaire</li></ul>
+    </section>
+    
+    <section>
+        <h2>Problème concret: détecter des mentions d'entreprises (en France)</h2>
+        <ul>
+            <li>Dans des flux textuels d'actualités</li>
+            <li>Par des moyens algorithmiques classiques ?</li>
+            <li>Par l'apprentissage automatique ?</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Solution #1: moyens algorithmiques</h2>
+
+        <p>Liste de toutes les entreprises enregistrés à la RCS</p>
+        <ul>
+            <li class="fragment roll-in">De nouveaux problèmes&nbsp;:
+            <ul>
+	    <li>ESSO SOCIETE ANONYME FRANCAISE</li>
+            <li>MONOPRIX EXPLOITATION PAR ABREVIATION MPX</li>
+            <li>PEUGEOT CITROEN AUTOMOBILES SA</li>
+            </ul></li>
+            <li class="fragment roll-in">Toutes les entreprises finissent par SAS, ETS, SA, SARL
+            <ul>
+	    <li>Personne ne mentionne une entreprise de cette façon</li>
+            <li>COMACAS (« FRANPRIX ET LEADER PRICE »)</li>
+            <li>ALLIANZ I.A.R.D.</li>
+            <li>COMPAGNIE IBM France</li>
+            </ul></li>
+        </ul>
+    </section>
+
+	<section>
+        <h4><i>Si la liste d'heuristiques se fait de plus en plus longue, l'apprentissage automatique est peut être la bonne solution	</i></h4>
+    </section>
+    
+    <section>
+        <h2>Solution #2: apprentissage automatique</h2>
+
+        <p>Quelle méthode ?</p>
+        <ul class="fragment roll-in">
+            <li>SVM (Support Vector Machines)&nbsp;:
+            <ul>
+			<li>Très en vogue dans la première décennie du XXIe</li>
+            <li>Méthode qui a fait ses preuves</li>				
+            </ul>
+            <img src="data/svm.png" width="80%" /></li>
+        </ul>
+    </section>
+
+	<section>
+        <h2>Solution #2: apprentissage automatique</h2>
+
+        <p>Comment ?</p>
+        <ul class="fragment roll-in">
+            <li>Réduction du périmètre à la liste RCS</li>
+			<li>Poser la question aux SVM</li>
+            <li>Ce segment textuel est-il une mention d'entreprise ?</li>
+            <img src="data/oracle.jpeg" border="0"/>
+        </ul>
+        
+    </section>
+    
+    <section>
+        <h2>Le ML ce n'est pas de la magie</h2>
+
+        <p> ... </p>
+        <ul>
+            <li>Train / Test</li>
+            <li>Echantillons positifs / négatifs</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Phase d'apprentissage</h2>
+
+        <p>Echantillons  pour l'apprentissage&nbsp;:</p>
+        <p><img src="data/kitten-train-sample-1.jpg" width="20%"/><img src="data/kitten-train-sample-2.jpg" width="20%"/><img src="data/kitten-train-sample-3.jpg" width="20%"/></p>
+        <p><img src="data/no-kitten-train-sample-1.jpg" width="20%"/><img src="data/no-kitten-train-sample-2.jpg" width="20%"/><img src="data/no-kitten-train-sample-3.jpg" width="20%"/></p>
+    </section>
+
+	<section>
+        <h2>Phase de test</h2>
+
+        <p>Echantillons pour le test&nbsp;:</p>
+        <table style="width:100%"><tr>
+		<td><img src="data/kitten-test-sample-1.jpg" width="100%"/></td>
+		<td><img src="data/kitten-test-sample-2.jpg" width="100%"/></td>
+		<td><img src="data/kitten-test-sample-3.jpg" width="100%"/></td>
+		<td><img src="data/kitten-test-sample-4.jpg" width="100%"/></td>
+		</tr>
+		<tr>
+		<td class="fragment roll-in" style="font-weight: bold; color:red"><center>Non</center></td>
+		<td class="fragment roll-in" style="font-weight: bold; color:green"><center>Oui</center></td>
+		<td class="fragment roll-in" style="font-weight: bold; color:red"><center>Non</center></td>
+		<td class="fragment roll-in" style="font-weight: bold; color:green"><center>Oui</center></td></tr>
+		</table> 
+        
+    </section>
+
+    <section>
+        <h2>Phase de test avec vraies données</h2>
+
+        <p>Echantillons de la vraie vie&nbsp;:</p>
+        <table style="width:100%"><tr>
+		<td><img src="data/kitten-test-sample-1.jpg" width="100%"/></td>
+		<td><img src="data/kitten-test-sample-2.jpg" width="100%"/></td>
+		<td><img src="data/kitten-real-world-sample-1.png" width="90%" style="background-color: white;"/></td>
+		<td><img src="data/kitten-real-world-sample-2.png" width="100%"/></td>
+		</tr>
+		<tr>
+		<td class="fragment roll-in" style="font-weight: bold; color:red"><center>Non</center></td>
+		<td class="fragment roll-in" style="font-weight: bold; color:green"><center>Oui</center></td>
+		<td class="fragment roll-in" style="font-weight: bold; color:red"><center>?</center></td>
+		<td class="fragment roll-in" style="font-weight: bold; color:red"><center>?</center></td></tr>
+		</table> 
+    </section>
+    
+    <section>
+        <h4><i>Est-ce le même problème avec les actualités ?</i></h4>
+    </section>
+    
+    <section>
+        <h2>Des mentions ambiguës...</h2>
+
+	<blockquote class="fragment roll-in">Au <span style="color:red">[total COMPANY ?]</span>, la Chine gère un total de 1500 milliards de dollars ../..</blockquote>
+	<blockquote class="fragment roll-in">Le groupe a écoulé l'an dernier au <span style="color:red">[total COMPANY ?]</span> 611.000 véhicules l'an dernier aux Etats-Unis, en hausse de 2,6% ../..</blockquote>
+    </section>
+
+    <section>
+        <h2>Amélioration du modèle #1</h2>
+
+	<h4>Introduction d'une boucle de feedback humaine</h4>
+	
+	<br/>
+        <p>Pour chaque mention d'entreprise détectée :</p>
+        <ul>
+	  <li>Validation/invalidation pour un humain</li>
+	  <li>Export d'un corpus d'exemples positifs / d'exemples négatifs</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Des mentions similaires...</h2>
+
+	<blockquote><span style="color:green">[Aigle COMPANY]</span> a dévoilé le 3ème volet de sa saga autour de son produit désormais phare, la botte en caoutchouc ! ../..</blockquote>
+	<p>... pour des entreprises très différentes :</p>
+	<ul>
+	  <li class="fragment roll-in"><span style="color:red"><b>Aigle</b></span> (451.846.331) Construction de maisons</li>
+	  <li class="fragment roll-in"><span style="color:red"><b>Aigle Transport</b></span> (498.068.105) Transports routiers</li>
+	  <li class="fragment roll-in"><span style="color:green"><b>Aigle International</b></span> (314.397.712) Fabrication de bottes</li>
+	  <li class="fragment roll-in"><span style="color:green"><b>Aigle</b></span> (348.144.007) Holding</li>
+	</ul>
+    </section>
+
+    <section>
+	<h2>Amélioration du modèle #2</h2>
+	
+        <h4>Filtrage des <i>features</i> pour le corpus d'exemple</h4>
+        <ul>
+	  <li>Si un fragment de texte est validé positivement par un humain</li>
+	  <li>On considère qu'il s'agit d'une mention valide</li>
+        </ul>
+    </section>
+    
+    <section>
+    <h2>Conclusion</h2>
+	
+      <h4>Le modèle actuel est mauvais</h4>
+      <ul>
+	  <li class="fragment roll-in">Au sens d'une évaluation scientifique</li>
+	  <li class="fragment roll-in">Mais il donne de résultats métiers intéressants</li>
+      </ul>
+    </section>
+    
+    <section>
+    <h2>Questions / Discussion</h2>
+    </section>
+
+</section>
+
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // Full list of configuration options available here:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme || 'night', // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        math: {
+            mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+            config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+        },
+
+        // Parallax scrolling
+        parallaxBackgroundImage: 'data/dictanova-logo.png',
+        parallaxBackgroundSize: '1900px 1900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            } },
+            { src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            } },
+            { src: 'plugin/zoom-js/zoom.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function () {
+                return !!document.body.classList;
+            } },
+            { src: 'plugin/math/math.js', async: true }
+        ]
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+/** border less images */
+.reveal section img.bless {
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+/** enforce right + left around images */
+.reveal section img.spaced {
+    margin-right: 25px;
+    margin-left: 25px;
+}
+
+/** images inside list items
+    should be aligned vertically with text */
+.reveal section li img.bless {
+    vertical-align: middle;
+}
+
+/** force images to be stacked on left side (outside of
+    default rendering flow) */
+.reveal section img.toleft {
+    display: inline;
+    float: left
+}
+
+/** remove any style on list items */
+.reveal section ul.unstyled {
+    list-style: none;
+}
