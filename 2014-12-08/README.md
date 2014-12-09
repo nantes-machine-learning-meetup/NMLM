@@ -30,14 +30,14 @@ début de thèse.
 Début 2014, il a arrêté son doctorat pour créer une société, [betasweets],
 qui lance un site de rencontre pas comme les autres, [bisimila].
 
-[DBWeb]: http://dbweb.enst.fr
 [arcomem]: http://www.arcomem.eu/
 [betasweets]: http://betasweets.com/
 [bisimila]: http://bisimila.com/
+[DBWeb]: http://dbweb.enst.fr
 
 ______________________________________________________________________________
 
 Cet évènement était organisé via [meetup] et la [cantine].
 
-[cantine]: http://www.meetup.com/Nantes-Machine-Learning-Meetup/events/218699250/
-[meetup]: http://cantine.atlantic2.org/evenements/nantes-machine-learning-meetup-2/
+[cantine]: http://cantine.atlantic2.org/evenements/nantes-machine-learning-meetup-2/
+[meetup]: http://www.meetup.com/Nantes-Machine-Learning-Meetup/events/218699250/
