@@ -1,4 +1,6 @@
-# Comment faire un crawl thématique efficacement dans un espace inconnu ?
+# L'exploration thématique
+
+Comment faire un crawl thématique efficacement dans un espace inconnu ?
 
 Imaginez que vous vouliez récupérer toutes les pages du Web parlant de Lara
 Fabian, comment les trouver au milieu d’une masse de pages ne parlant pas de
