@@ -24,7 +24,7 @@ University, QC) and in France (Telecom ParisTech).
 
 ## Ressources et liens
 
-Several demos used the web audio API.
+* [La présentation elle-même](https://raw.githubusercontent.com/JeffAbrahamson/NMLM/master/2015-01-12/lagrangeMlg15.pdf)
 
 * [Spectrogram visualizer](http://chromium.googlecode.com/svn/trunk/samples/audio/visualizer-live.html)
 
