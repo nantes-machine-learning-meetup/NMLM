@@ -1,4 +1,4 @@
-# Reading group : Building high-level features using large scale unsupervised 
+# Reading group : Building high-level features using large scale unsupervised learning
 
 ## Résumé
 
