@@ -2,15 +2,19 @@
 
 The presentation uses reveal.js. You can then open index.html in your browser.  For example,
 
-1.  Ouvrir la dernière version dans votre navigateur préféré :
-```
-xdg-open https://rawgit.com/JeffAbrahamson/NMLM/master/2015-06-01/index.html
-```
+1.  Ouvrir la dernière version dans votre navigateur préféré.
+
+    ```
+    xdg-open https://rawgit.com/JeffAbrahamson/NMLM/master/2015-06-01/index.html
+    ```
+
 2.  Si vous avez une copie du _repository_ Git en local,
    Ouvrir le fichier index.html dans votre navigateur préféré :
-```
-xdg-open index.html
-```
+
+    ```
+    xdg-open index.html
+    ```
+
 3.  Cliquer [ici](https://rawgit.com/JeffAbrahamson/NMLM/master/2015-06-01/index.html).
 
 # Some reading mentioned during the evening
