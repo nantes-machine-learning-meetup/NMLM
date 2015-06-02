@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+	<meta charset="utf-8">
+
+	<title>Sequence to Sequence Learning with Neural Networks</title>
+
+	<meta name="description"
+              content="Nantes Machine Learning Meetup reading group presentation: Sequence to Sequence Learning with Neural Networks">
+	<meta name="author" content="Hugo Mougard">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style"
+              content="black-translucent" />
+
+	<meta name="viewport"
+              content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/custom.css">
+        <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+	 var link = document.createElement( 'link' );
+	 link.rel = 'stylesheet';
+	 link.type = 'text/css';
+	 link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+	 document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	     <script src="lib/js/html5shiv.js"></script>
+	     <![endif]-->
+    </head>
+
+    <body>
+
+	<div class="reveal">
+
+            <div class="slides">
+                <section>
+                    <h2>
+                        <strong class="text-muted">Reading Group #2</strong>
+                        <br>
+                        Sequence to sequence
+                        <strong class="text-primary">learning</strong>
+                        <br>
+                        with Neural Networks
+                    </h2>
+                    <div class="text-muted">
+                        For the fabulous
+                        <strong class="text-primary">
+                            Nantes Machine Learning Meetup
+                        </strong>
+                        <br>
+                        By
+                        <strong class="text-primary">
+                            Hugo Mougard
+                        </strong>
+                        <br>
+                        On
+                        <strong class="text-primary">
+                            June, 1
+                        </strong>
+                    </div>
+                </section>
+                <section>
+                    <section>
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li class="fragment highlight-red">
+                                Paper Metadata
+                            </li>
+                            <li>Task</li>
+                            <li>Previous Methods</li>
+                            <li>Method</li>
+                            <li>Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Paper Metadata</h2>
+                        <p>
+                            <strong class="text-primary">Google DeepMind</strong>
+                            strikes again
+                        </p>
+                        <dl>
+                            <dt>Title</dt>
+                            <dd>Sequence to Sequence Learning with
+                                Neural Networks</dd>
+                            <dt>Authors</dt>
+                            <dd>Ilya Sutskever, Oriol Vinyals and Quoc
+                                V. Le</dd>
+                            <dt>Conference</dt>
+                            <dd>NIPS'2014 (2014/12)</dd>
+                            <dt>Citations six months after publication</dt>
+                            <dd>77</dd>
+                        </dl>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="yellow">
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Paper Metadata</li>
+                            <li class="fragment highlight-red">Task</li>
+                            <li>Previous Methods</li>
+                            <li>Method</li>
+                            <li>Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <img class="stretch" src="img/turing-test.jpeg">
+                        <p class="text-muted" style="font-size: 15px;">
+                            http://csunplugged.org/the-turing-test/
+                        </p>
+                    </section>
+                    <section>
+                        <h4>Task</h4>
+                        <h2>Domain</h2>
+                        <p>
+                            <strong class="text-primary">
+                                Machine Translation
+                            </strong>
+                        </p>
+                        <ul>
+                            <li>
+                                One of the hardest Natural Language
+                                Processing Tasks
+                            </li>
+                            <li>
+                                Extremely active research domain
+                            </li>
+                            <li>Huge industry backup</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Task</h4>
+                        <h2>Dataset</h2>
+                        <p>
+                            Subset of the
+                            <strong class="text-primary">
+                                WMT'2014 English to French Machine
+                                Translation track
+                            </strong>
+                            dataset
+                        </p>
+                        <ul>
+                            <li>
+                                WMT = Workshop on Machine Translation
+                            </li>
+                            <li>
+                                Training set: 12M pairs of sentences
+                                (348M French words and 304M English
+                                words)
+                            </li>
+                            <li>
+                                Test set: not detailed in the paper
+                            </li>
+                            <li>
+                                Availability of baseline results for
+                                this particular training and test set
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Task</h4>
+                        <h2>Evaluation Metric</h2>
+                        <p>
+                            <strong class="text-primary">BLEU</strong>
+                        </p>
+                        <ul>
+                            <li>
+                                Most used metric for Machine
+                                Translation
+                            </li>
+                            <li>
+                                Uses comparisons with human
+                                translations through n-gram matching
+                            </li>
+                            <li>
+                                The higher the better
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="pink">
+                        <h1 style="color: white;">Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Paper Metadata</li>
+                            <li>Task</li>
+                            <li class="fragment highlight-red">
+                                Previous Methods
+                            </li>
+                            <li>Method</li>
+                            <li>Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h6>Previous Methods</h6>
+                        <h3>Machine Translation</h3>
+                        <p>
+                            Example with
+                            <strong class="text-primary">
+                                Phrase-based Machine Translation
+                            </strong>
+                        </p>
+                        <p>
+                            A typical pipeline has many steps
+                        </p>
+                        <ul>
+                            <li>Pre-processing</li>
+                            <li>World alignment</li>
+                            <li>Lexical translation</li>
+                            <li>Phrase extraction</li>
+                            <li>Phrase scoring</li>
+                            <li>Phrase reordering</li>
+                            <li>Decoding</li>
+                        </ul>
+                        <p>
+                            Mostly trained/tuned
+                            <strong class="text-danger">
+                                independently
+                            </strong>
+                        </p>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="green" style="color:white;">
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Paper Metadata</li>
+                            <li>Task</li>
+                            <li>Previous Methods</li>
+                            <li class="fragment highlight-red">Method</li>
+                            <li>Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Goal</h3>
+                        <p>
+                        Apply Neural Language Models to Machine
+                        Translation:
+                            <br>→ <span class="text-success">one</span> simple
+                            model instead of <span class="text-danger">many</span> in
+                            previous work
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Roadblocks</h3>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class='col-xs-8'>
+                                    <ol>
+                                        <li>
+                                            Varying lengths of inputs
+                                            and outputs (sequence to
+                                            sequence learning)
+                                            <br>
+                                            → which
+                                            <span class="text-primary">
+                                                network topology
+                                            </span>
+                                            to use?
+                                        </li>
+                                        <li>
+                                            Huge training dataset
+                                            <br>
+                                            → how to
+                                            <span class="text-primary">
+                                                speed up
+                                            </span>
+                                            learning?
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class='col-xs-4'>
+                                    <img src="img/roadblock.jpg">
+                                    <p class="text-muted" style="font-size: 15px;">
+                                        http://www.walthampton.com/success/road-blocks-hula-hoops/
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Network topologies</h3>
+                        <h5>Our lego bricks</h5>
+                        <p>Fixed input size, fixed output size → usual
+                        feed forward networks work:</p>
+                        <img src="img/fixed-fixed-forward.png">
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Network topologies</h3>
+                        <h5>Our lego bricks</h5>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class='col-xs-5'>
+                                    <p>Varying input size, output size
+                                        = input size:</p>
+                                    <img src="img/rnn.png">
+                                </div>
+                                <div class='col-xs-2'>
+                                </div>
+                                <div class='col-xs-5'>
+                                    <p>Problems:</p>
+                                    <ul>
+                                        <li>“Not” translated before
+                                            seeing the whole sentence.</li>
+                                        <li>Hard to decode if
+                                            accounting for different
+                                            lengths</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Network topologies</h3>
+                        <p>Key idea to model varying input and output
+                            lengths:
+                            <br>
+                            <strong>use the encoder-decoder pattern: 2
+                            networks</strong></p>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Network topologies</h3>
+                        <p>Fixed input size, varying output size →
+                        Combination of feed forward and recurrent
+                        networks (2014):</p>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class='col-xs-9'>
+                                    <img src="img/show-and-tell.png"
+                                         width="600">
+                                    <p class="text-muted" style="font-size: 15px;">
+                                        Vinyals, Oriol, et al. "Show
+                                        and tell: A neural image
+                                        caption generator." 2014.
+                                    </p>
+                                </div>
+                                <div class='col-xs-3'>
+                                    <img src="img/fixed-variable-mixed.png">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Network topologies</h3>
+                        <p>Varying input size, varying output size →
+                        Combination of two recurrent networks (this paper):</p>
+                        <img src="img/variable-variable-rnn.png"
+                             width="600">
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Network details</h3>
+                        <br>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class='col-xs-7'>
+                                    <ul>
+                                        <li>4 layers (deep LSTM)</li>
+                                        <li>1000 cells / layer</li>
+                                        <li>1000 dimensional word embeddings</li>
+                                        <li>vocabulary of 160 000 input words and
+                                            80 000 output words</li>
+                                    </ul>
+                                </div>
+                                <div class='col-xs-5'>
+                                    <img src="img/variable-variable-rnn-real.png"
+                                         width="400">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Learning</h3>
+                        <p>
+                            <ul>
+                                <li>initialize parameters randomly in
+                                    [-0.08, 0.08]</li>
+                                <li>Stochastic Gradient Descent,
+                                    α = 0.7</li>
+                                <li>after 5 epochs, halve α every half
+                                    epoch</li>
+                                <li>gradient clipping (more on that
+                                    later)</li>
+                                <li>no momentum</li>
+                                <li>mini-batches of 128 pairs of
+                                    sentences of roughly the same
+                                    length</li>
+                            </ul>
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Method</h6>
+                        <h3>Learning trick</h3>
+                        <br>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class='col-xs-7'>
+                                    Reverse the input → reduce minimal time lag
+                                </div>
+                                <div class='col-xs-5'>
+                                    <img src="img/variable-variable-rnn-real-reversed.png"
+                                         width="500">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="blue">
+                        <h1 style="color:white;">Overview</h1>
+                        <ul style="list-style: none; color: white;">
+                            <li>Paper Metadata</li>
+                            <li>Task</li>
+                            <li>Previous Methods</li>
+                            <li>Method</li>
+                            <li class="fragment highlight-blue">Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h6>Experiments</h6>
+                        <h3>Method</h3>
+                        <p>
+                            <ul>
+                                <li>Directly use the models to
+                                    generate French from English</li>
+                                <li>Use the models to rescore a SMT
+                                    baseline output</li>
+                            </ul>
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Experiments</h6>
+                        <h3>Results</h3>
+                        <br>
+                        <table class="table table-striped">
+                            <theader>
+                                <th>Model</th>
+                                <th>Method</th>
+                                <th>Performance</th>
+                            </theader>
+                            <tr>
+                                <td>1 model normal input</td>
+                                <td>generation</td>
+                                <td>26.17</td>
+                            </tr>
+                            <tr>
+                                <td>1 model normal input</td>
+                                <td>rescoring</td>
+                                <td>35.61</td>
+                            </tr>
+                            <tr>
+                                <td>1 model reversed input</td>
+                                <td>generation</td>
+                                <td>30.59</td>
+                            </tr>
+                            <tr>
+                                <td>1 model reversed input</td>
+                                <td>rescoring</td>
+                                <td>35.85</td>
+                            </tr>
+                            <tr>
+                                <td>5 models reversed input</td>
+                                <td>generation</td>
+                                <td>34.81</td>
+                            </tr>
+                            <tr>
+                                <td>5 models reversed input</td>
+                                <td>rescoring</td>
+                                <td>36.5</td>
+                            </tr>
+                        </table>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="orange">
+                        <h1 style="color:white;">Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Paper Metadata</li>
+                            <li>Task</li>
+                            <li>Previous Methods</li>
+                            <li>Method</li>
+                            <li>Experiments</li>
+                            <li class="fragment highlight-blue">
+                                Long Short-Term Memory
+                            </li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            The basics: Simple Recurrent Neuron
+                        </h3>
+                        <img src="img/srn.png" height="400">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Klaus Greff, Rupesh Kumar Srivastava, Jan
+                            Koutník, Bas R. Steunebrink, Jürgen
+                            Schmidhuber. "LSTM: A Search Space
+                            Odyssey." Pre-print.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            SRN problem: vanishing gradients
+                        </h3>
+                        <br>
+                        <img src="img/gradient-rnn.png" height="400">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Alex Graves. "Supervised Sequence
+                            Labelling with Recurrent Neural Networks."
+                            Vol. 385. Heidelberg: Springer, 2012.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            Solution: add gates
+                        </h3>
+                        <br>
+                        <img src="img/gradient-lstm.png" height="400">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Alex Graves. "Supervised Sequence
+                            Labelling with Recurrent Neural Networks."
+                            Vol. 385. Heidelberg: Springer, 2012.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>Original LSTM</h3>
+                        <br>
+                        <img src="img/lstm.png" height="300">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Sepp Hochreiter and Jürgen
+                            Schmidhuber. "Long short-term memory."
+                            Neural computation 9.8 (1997): 1735-1780.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 1</span>
+                        </h3>
+                        <p>
+                            The internal state tends to become
+                            saturated → Need a way to reset it.
+                        </p>
+                        <img src="img/lstm.png" height="300">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Sepp Hochreiter and Jürgen
+                            Schmidhuber. "Long short-term memory."
+                            Neural computation 9.8 (1997): 1735-1780.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 1</span>
+                        </h3>
+                        <p>
+                            A LSTM with satured memory is just a
+                            standard RNN cell (it can't remember
+                            anything).
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 1</span>
+                        </h3>
+                        <p>
+                            Solution: add a forget gate
+                        </p>
+                        <img src="img/forget-gate.png" height="300">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Gers, Felix A., Jürgen Schmidhuber, and
+                            Fred Cummins. "Learning to forget:
+                            Continual prediction with LSTM."  Neural
+                            computation 12.10 (2000): 2451-2471.
+                        </p>
+                        <p>
+                            → Now LSTMs can learn when to
+                            decrease/flush the state
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 1</span>
+                        </h3>
+                        <br>
+                        <img src="img/forget-gate-activations.png" height="400">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Gers, Felix A., Jürgen Schmidhuber, and
+                            Fred Cummins. "Learning to forget:
+                            Continual prediction with LSTM."  Neural
+                            computation 12.10 (2000): 2451-2471.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 1</span>
+                        </h3>
+                        <h4>When does it matter?</h4>
+                        <p>
+                            No end-of-sequence markers
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 2</span>
+                        </h3>
+                        <p>
+                            Gates make decision with no knowledge of the state.
+                        </p>
+                        <img src="img/lstm.png">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Sepp Hochreiter and Jürgen
+                            Schmidhuber. "Long short-term memory."
+                            Neural computation 9.8 (1997): 1735-1780.
+                        </p>
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM
+                            <span class="text-danger">problem 2</span>
+                        </h3>
+                        <p>
+                            Solution: add connections from the state to the gates.
+                        </p>
+                        
+                    </section>
+                    <section>
+                        <h6>Long Short-Term Memory</h6>
+                        <h3>
+                            LSTM overview
+                        </h3>
+                        <img src="img/srn-vs-lstm.png" height="400">
+                        <p class="text-muted" style="font-size: 15px;">
+                            Klaus Greff, Rupesh Kumar Srivastava, Jan
+                            Koutník, Bas R. Steunebrink, Jürgen
+                            Schmidhuber. "LSTM: A Search Space
+                            Odyssey." Pre-print.
+                        </p>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="black" style="color:white;">
+                        <h1 style="color:white;">Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Paper Metadata</li>
+                            <li>Task</li>
+                            <li>Previous Methods</li>
+                            <li>Method</li>
+                            <li>Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li class="fragment highlight-red">
+                                Bibliography
+                            </li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h6>Bibliography</h6>
+                        <h3>The paper</h3>
+                        <br>
+                        <ul style="list-style: none;">
+                            <li>
+                                <a href="http://arxiv.org/abs/1409.3215"
+                                   target="_blank">
+                                    Article
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://msrvideo.vo.msecnd.net/rmcvideos/239083/dl/239083.mp4"
+                                   target="_blank">
+                                    NIPS'2014 Talk
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://www.iro.umontreal.ca/~bengioy/cifar/NCAP2014-summerschool/slides/Ilya_LSTMs_for_Translation.pdf"
+                                   target="_blank">
+                                    NIPS'2014 Slides
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h6>Bibliography</h6>
+                        <h3>LSTM model</h3>
+                        <br>
+                        <small>
+                        <table class="table table-condensed">
+                            <tr>
+                                <td>Original paper</td>
+                                <td>
+                                    <a href="http://deeplearning.cs.cmu.edu/pdfs/Hochreiter97_lstm.pdf"
+                                       target="_blank">
+                                        Long Short-Term Memory
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Forget gate</td>
+                                <td>
+                                    <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.55.5709&rep=rep1&type=pdf"
+                                       target="_blank">
+                                        Learning to Forget: Continual
+                                        Prediction with LSTM
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Peephole connections</td>
+                                <td>
+                                    <a href="http://www.jmlr.org/papers/volume3/gers02a/gers02a.pdf"
+                                       target="_blank">
+                                        Learning Precise Timing with
+                                        LSTM Recurrent Networks
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Survey of many LSTM variants</td>
+                                <td>
+                                    <a href="http://arxiv.org/abs/1503.04069"
+                                       target="_blank">
+                                        LSTM: A Search Space Odyssey
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                        </small>
+                    </section>
+                    <section>
+                        <h6>Bibliography</h6>
+                        <h3>LSTM applications</h3>
+                        <br>
+                        <small>
+                        <table class="table table-condensed">
+                            <tr>
+                                <td>Image Captioning</td>
+                                <td>
+                                    <a href="http://arxiv.org/abs/1411.4555"
+                                       target="_blank">
+                                        Show and Tell: A Neural Image Caption Generator
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Machine Translation</td>
+                                <td>
+                                    <a href="http://arxiv.org/abs/1409.0473"
+                                        target="_blank">
+                                         Neural Machine Translation by
+                                         Jointly Learning to Align and
+                                         Translate
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Keywords Detection</td>
+                                <td>
+                                    <a href="http://arxiv.org/abs/1502.06922"
+                                       target="_blank">
+                                        Deep Sentence Embedding Using
+                                        the Long Short Term Memory
+                                        Network
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Speech Recognition</td>
+                                <td>
+                                    <a href="http://www.jmlr.org/proceedings/papers/v32/graves14.pdf"
+                                       target="_blank">
+                                        Towards End-to-End Speech
+                                        Recognition with Recurrent
+                                        Neural Networks
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Handwriting Generation</td>
+                                <td>
+                                    <a href="http://arxiv.org/abs/1308.0850"
+                                       target="_blank">
+                                        Generating Sequences With
+                                        Recurrent Neural Networks
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Sentiment Analysis</td>
+                                <td>
+                                    <a href="http://arxiv.org/abs/1503.00075"
+                                       target="_blank">
+                                        Improved Semantic
+                                        Representations From
+                                        Tree-Structured Long
+                                        Short-Term Memory Networks
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                        </small>
+                    </section>
+                    <section>
+                        <h6>Bibliography</h6>
+                        <h3>Misc. Recurrent networks stuff</h3>
+                        <br>
+                        <small>
+                            <table class="table table-condensed">
+                                <tr>
+                                    <td>Neural Networks Overview</td>
+                                    <td>
+                                        <a href="http://www.cs.toronto.edu/~graves/preprint.pdf"
+                                           target="_blank">
+                                            Supervised Sequence
+                                            Labelling with Recurrent
+                                            Neural Networks
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Regularization</td>
+                                    <td>
+                                        <a href="http://arxiv.org/abs/1409.2329"
+                                           target="_blank">
+                                            Recurrent Neural Network
+                                            Regularization
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Recurrent Networks Training</td>
+                                    <td>
+                                        <a href="http://arxiv.org/abs/1211.5063"
+                                           target="_blank">
+                                            On the difficulty of
+                                            training Recurrent Neural
+                                            Networks
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>CNN alternative</td>
+                                    <td>
+                                        <a href="http://arxiv.org/abs/1505.00393"
+                                           target="_blank">
+                                            ReNet: A Recurrent Neural
+                                            Network Based Alternative
+                                            to Convolutional Networks
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Great LSTM blog post + code</td>
+                                    <td>
+                                        <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/"
+                                           target="_blank">
+                                            The Unreasonable
+                                            Effectiveness of Recurrent
+                                            Neural Networks
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </small>
+                    </section>
+                </section>
+                <section data-state="lila">
+                    <section  data-background="purple" style="color:white;">
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Paper Metadata</li>
+                            <li>Task</li>
+                            <li>Previous Methods</li>
+                            <li>Method</li>
+                            <li>Experiments</li>
+                            <li>Long Short-Term Memory</li>
+                            <li>Bibliography</li>
+                            <li class="fragment highlight-red">Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h3>Conclusion</h3>
+                        <p>
+                            <ul>
+                                <li>LSTM achieves state of the art perfs
+                                    on very hard tasks</li>
+                                <li>supervised learning might be a solved
+                                    problem soon</li>
+                            </ul>
+                        </p>
+                    </section>
+                </section>
+                <section data-background="black">
+                    <h2><span style="color: white;">Thank</span>
+                        <span style="color: gold;">you</span>
+                        <span style="color: pink;">very</span>
+                        <span style="color: red;">much</span>
+                        <span style="color: yellow;">for</span>
+                        <span style="color: green;">your</span>
+                        <span style="color: orange;">attention</span>
+                        <br><span class="text-primary">😍</span></h2>
+                </section>
+                <section>
+                    <section data-state="cobalt">
+                        <h1>Discussion time!</h1>
+                    </section>
+                </section>
+            </div>
+
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+
+	 // Full list of configuration options available at:
+	 // https://github.com/hakimel/reveal.js#configuration
+	 Reveal.initialize({
+	   controls: true,
+	   progress: true,
+	   history: true,
+	   center: true,
+           math: {
+             mathjax: 'bower_components/MathJax/MathJax.js',
+             config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+           },
+	   transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+	   // Optional reveal.js plugins
+	   dependencies: [
+	     { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+	     { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+	     { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+	     { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+	     { src: 'plugin/zoom-js/zoom.js', async: true },
+	     { src: 'plugin/notes/notes.js', async: true },
+             { src: 'plugin/math/math.js', async: true }
+	   ]
+	 });
+
+	</script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+    </body>
+</html>
