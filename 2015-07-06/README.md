@@ -45,7 +45,7 @@ Il est l'un des auteurs du livre de référence sur le sujet dont la
 
 1. Ouvrir la dernière version dans votre appli préférée :
 ```
-xdg-open https://raw.githubusercontent.com/nantes-machine-learning-meetup/NMLM/master/2015-07-06/SlidesMeetup.pdf
+xdg-open https://github.com/nantes-machine-learning-meetup/NMLM/raw/master/2015-07-06/SlidesMeetup.pdf
 ```
 
 2. Si vous avez une copie du _repository_ Git en local,
