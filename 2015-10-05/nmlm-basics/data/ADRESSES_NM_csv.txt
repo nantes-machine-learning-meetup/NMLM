@@ -1,0 +1,69 @@
+
+================================================
+TITRE DU JEU DE DONNEES
+================================================
+
+Adresses postales de Nantes Métropole
+
+================================================
+DESCRIPTION
+================================================
+
+
+Thèmes 							: Urbanisme
+Granularité						: Commune
+
+================================================
+INFORMATIONS TECHNIQUES
+================================================
+
+Date de dernière mise à jour    : 25/08/2015
+Fréquence de mise à jour 		: trimestrielle 
+
+Derniere mise à jour technique	:
+
+	Date : 25/08/2015
+	Nature de la modification : Mise à jour - 25 août 2015
+	Description de la modification : Mise à jour trimestrielle
+
+================================================
+ATTRIBUTS
+================================================
+
+
+ADRESSE       : Libellé adresse
+NOMCOM        : Nom de commune (origine cadastre)
+MOT_DIRECTEUR : Mot Directeur de la voie qualifiée
+NUMERO        : Numéro adresse
+RIVOLI        : Code Rivoli de la voie
+CODE_POSTAL   : Code postal
+IRIS2008      : Iris 2008
+LONG_WGS84    : Longitude WGS84
+LAT_WGS84     : Latitude WGS84
+ 
+
+================================================
+CONTACT
+================================================
+
+Pour toute demande d'information ou remarque, 
+merci de passer par le forum du site http://data.nantes.fr
+
+================================================
+INFORMATIONS LEGALES
+================================================
+
+
+Propriétaire : Nantes Métropole
+
+Gestionnaire : Nantes Métropole
+
+Diffuseur	 : Nantes Métropole
+
+Licence      : Open Database License (ODbL)
+
+================================================
+SIGNATURES DES FICHIERS
+================================================
+
+ADRESSES_NM.csv (md5) : 40a8b9f17dd78704cd84a120fc8412ec
