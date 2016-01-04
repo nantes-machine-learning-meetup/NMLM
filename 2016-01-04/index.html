@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+	<meta charset="utf-8">
+
+	<title>NMLM | Reading group #3: Neural Programming</title>
+
+	<meta name="description" content="Reading group #3 of the Nantes Machine Learning Meetup, about Neural Programming.">
+	<meta name="author" content="Hugo Mougard">
+
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+	<link rel="stylesheet" href="lib/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/custom.css">
+        <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+	 var link = document.createElement( 'link' );
+	 link.rel = 'stylesheet';
+	 link.type = 'text/css';
+	 link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+	 document.getElementsByTagName( 'head' )[0].appendChild( link );
+	</script>
+
+	<!--[if lt IE 9]>
+	     <script src="lib/js/html5shiv.js"></script>
+	     <![endif]-->
+    </head>
+
+    <body>
+	<div class="reveal">
+            <div class="slides">
+                <section>
+                    <h2>
+                        <span class="text-muted">Reading Group #3</span>
+                        <br>
+                        <br>
+                        <strong>Neural Programming</strong>  
+                    </h2>
+                    <br>
+                    <br>
+                    <div class="text-muted">
+                        For the awesome
+                        <strong class="text-primary">
+                            Nantes Machine Learning Meetup
+                        </strong>
+                        <br>
+                        By
+                        <strong class="text-primary">
+                            Hugo Mougard
+                        </strong>
+                        <br>
+                        On
+                        <strong class="text-primary">
+                            January, 4
+                        </strong>
+                    </div>
+                </section>
+                <section>
+                    <section>
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li class="fragment highlight-red">
+                                Introduction
+                            </li>
+                            <li>Paper 1: NP</li>
+                            <li>Paper 2: NPI</li>
+                            <li>Paper 3: NRAM</li>
+                            <li>Comparison</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Introduction</h4>
+                        <h2>Why Neural Programming?</h2>
+                        <p>Many papers submitted to ICLR 2016 are
+                            about learning programs</p>
+                        <ul>
+                            <li>Very interesting problem</li>
+                            <li>Very important problem</li>
+                            <li>Recently in our reach</li>
+                        </ul>
+                        <p>→ Let's review some of them ♡</p>
+                    </section>
+                    <section>
+                        <h4>Introduction</h4>
+                        <h2>Neural Programming checklist</h2>
+                        <p>Can we:</p>
+                        <ul>
+                            <li>add memory to the program without
+                                making its training harder?</li>
+                            <li>have complex operations</li>
+                            <li>have complex combinations of
+                                operations</li>
+                            <li>generalize to unseen input ranges</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Introduction</h4>
+                        <h2>What about seq2seq?</h2>
+                        <p>seq2seq has tight architectural coupling
+                            for the different characteristics:</p>
+                        <ul>
+                            <li>Memory size (number of hidden units)</li>
+                            <li>Operation complexity (number of
+                                parameters, quadratic in the memory
+                                size)</li>
+                            <li>Combination complexity (depth,
+                                arbitrary)</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Introduction</h4>
+                        <h2>seq2seq checklist results</h2>
+                        <ul style="list-style: none;">
+                            <li>✗ add memory w/o making the training
+                                harder?</li>
+                            <li>✓ have complex operations</li>
+                            <li>✗ have complex combinations of the
+                                operations</li>
+                            <li>✗ generalize to unseen input ranges</li>
+                        </ul>
+                        <p>→ can't efficiently learn programs.</p>
+                    </section>
+                    <section>
+                        <h4>Introduction</h4>
+                        <h2>What's the solution?</h2>
+                        <p>The Neural Turing Machine decouples those
+                            characteristics. We'll have a look at 3 of
+                            its successors.</p>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="yellow">
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Introduction</li>
+                            <li class="fragment highlight-red">
+                                Paper 1: NP
+                            </li>
+                            <li>Paper 2: NPI</li>
+                            <li>Paper 3: NRAM</li>
+                            <li>Comparison</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Paper Metadata</h2>
+                        <dl>
+                            <dt>Title</dt>
+                            <dd>Neural Programmer: Inducing Latent Programs with Gradient Descent</dd>
+                            <dt>Authors</dt>
+                            <dd>Arvind Neelakantan¹, Quoc V. Le² & Ilya Sutskever²</dd>
+                            <dt>Lab</dt>
+                            <dd>University of Massachusetts Amherst¹ &
+                                Google Brain²</dd>
+                            <dt>Conference</dt>
+                            <dd>Under review for ICLR 2016</dd>
+                        </dl>
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Task</h2>
+                        <p>
+                            From a <strong>question</strong> and a
+                            <strong>table</strong> containing
+                            information, produce an <strong>answer</strong>.
+                        </p>
+                        <p><i>e.g.</i></p>
+                        <small>
+                            <dl>
+                                <dt>Question</dt>
+                                <dd>Who is the president of the U.S.?</dd>
+                                <dt>Table</dt>
+                                <dd>
+                                    <small>
+                                        <table class="table table-condensed">
+                                            <tr>
+                                                <th>President</th>
+                                                <th>Country</th>
+                                            </tr>
+                                            <tr>
+                                                <td>F. Hollande</td>
+                                                <td>France</td>
+                                            </tr>
+                                            <tr>
+                                                <td>B. Obama</td>
+                                                <td>United States of America</td>
+                                            </tr>
+                                            <tr>
+                                                <td>V. Putin</td>
+                                                <td>Russian Federation</td>
+                                            </tr>
+                                        </table>
+                                    </small>
+                                </dd>
+                                <dt>Answer</dt>
+                                <dd>B. Obama</dd>
+                            </dl>
+                        </small>
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Main idea overview</h2>
+                        <p>NNs with arithmetic & logic ops and
+                            external memory</p>
+                        <img src="img/np-overview.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Implementation</h2>
+                        <img src="img/np-detail.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Question rnn</h2>
+                        <img src="img/np-question.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Data selector</h2>
+                        <img src="img/np-data-selector.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Operation selector</h2>
+                        <img src="img/np-op-selector.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>History rnn</h2>
+                        <img src="img/np-history.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 1: NP</h4>
+                        <h2>Training</h2>
+                        <ul>
+                            <li>On (question, table, answer) triples</li>
+                            <li>Fully differentiable. Adam optimization</li>
+                            <li>Some techincal tricks: hard training</li>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="pink">
+                        <h1 style="color: white;">Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Introduction</li>
+                            <li>Paper 1: NP</li>
+                            <li class="fragment highlight-red">
+                                Paper 2: NPI
+                            </li>
+                            <li>Paper 3: NRAM</li>
+                            <li>Comparison</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Paper 2: NPI</h4>
+                        <h2>Paper Metadata</h2>
+                        <dl>
+                            <dt>Title</dt>
+                            <dd>Neural Programmer-Interpreters</dd>
+                            <dt>Authors</dt>
+                            <dd>Scott Reed & Nando de Freitas</dd>
+                            <dt>Lab</dt>
+                            <dd>Google DeepMind</dd>
+                            <dt>Conference</dt>
+                            <dd>Under review for ICLR 2016</dd>
+                        </dl>
+                    </section>
+                    <section>
+                        <h4>Paper 2: NPI</h4>
+                        <h2>Main idea overview</h2>
+                        <ul>
+                            <li>Learn small programs</li>
+                            <li>Learn to compose small programs into
+                                bigger ones with a controller</li>
+                            <li>Stock programs in memory and re-use
+                                them</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Paper 2: NPI</h4>
+                        <h2>Some details 1/2</h2>
+                        <ul>
+                            <li>A program is an embedding</li>
+                            <li>
+                                Controller input:
+                                <ul>
+                                    <li>the program to execute</li>
+                                    <li>its arguments</li>
+                                    <li>input from the environment</li>
+                                </ul>
+                            </li>
+                            <li>
+                                Controller output:
+                                <ul>
+                                    <li>key of the next program to execute</li>
+                                    <li>args of the next program</li>
+                                    <li>whether to end the execution or not</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Paper 2: NPI</h4>
+                        <h2>Example</h2>
+                        <img src="img/npi-example.png" height="400">
+                    </section>
+                    <section>
+                        <h4>Paper 2: NPI</h4>
+                        <h2>Some details 2/2</h2>
+                        <img src="img/npi-inference.png" height="400">
+                    </section>
+                    <section>
+                        <h4>Paper 2: NPI</h4>
+                        <h2>Training</h2>
+                        <ul>
+                            <li>On program traces</li>
+                            <li>Curriculum learning</li>
+                            <li>If the inference core is learned, it's
+                                possible to freeze weights to learn
+                                new programs w/o forgetting old ones</li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="green" style="color:white;">
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Introduction</li>
+                            <li>Paper 1: NP</li>
+                            <li>Paper 2: NPI</li>
+                            <li class="fragment highlight-red">
+                                Paper 3: NRAM
+                            </li>
+                            <li>Comparison</li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Paper Metadata</h2>
+                        <dl>
+                            <dt>Title</dt>
+                            <dd>Neural Random-Access Machines</dd>
+                            <dt>Authors</dt>
+                            <dd>Karol Kurach¹, Marcin Andrychowicz¹ &
+                                Ilya Sutskever²</dd>
+                            <dt>Lab</dt>
+                            <dd>Google¹ & Google Brain²</dd>
+                            <dt>Conference</dt>
+                            <dd>Under review for ICLR 2016</dd>
+                        </dl>
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Task</h2>
+                        <p>Transform a <strong>memory tape</strong> containing
+                            some <strong>input data</strong> so that
+                            it contains the result of executing a given <strong>algorithm</strong> on
+                            the input.</p>
+                        <p><i>e.g. with sorting</i></p>
+                        <dl>
+                            <dt>State of the tape at the start:</dt>
+                            <dd>
+                                <table class="table">
+                                    <tr>
+                                        <td>3</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>5</td>
+                                        <td>4</td>
+                                    </tr>
+                                </table>
+                            </dd>
+                            <dt>State of the tape at the end:</dt>
+                            <dd>
+                                <table class="table">
+                                    <tr>
+                                        <td>1</td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>5</td>
+                                    </tr>
+                                </table>
+                            </dd>
+                        </dl>
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Main idea overview</h2>
+                        <p>NNs with arithmetic & logic ops, external
+                            memory and registers</p>
+                        <img src="img/nram-overview.png" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Use of registers 1/2</h2>
+                        <table>
+                            <colgroup>
+                                <col span="2">
+                                <col span="3" style="background-color:Chartreuse">
+                                <col span="3" style="background-color:yellow">
+                                <col span="5">
+                            </colgroup>
+                            <tr>
+                                <th>Step</th>
+                                <th>0</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>r1</th>
+                                <th>r2</th>
+                                <th>r3</th>
+                                <th>READ</th> 
+                                <th>WRITE</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>[0]</td>
+                                <td>[0]: 4</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>0</td>
+                                <td>1</td>
+                                <td>[1]</td>
+                                <td>[4]: 2</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>2</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>[1]</td>
+                                <td>[4]: 2</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>2</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>[2]</td>
+                                <td>[5]: 10</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>2</td>
+                                <td>[2]</td>
+                                <td>[5]: 10</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>0</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>[3]</td>
+                                <td>[6]: 6</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>4</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>2</td>
+                                <td>10</td>
+                                <td>6</td>
+                                <td>3</td>
+                                <td>3</td>
+                                <td>3</td>
+                                <td>[3]</td>
+                                <td>[6]: 6</td>
+                            </tr>
+                        </table>
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Use of registers 2/2</h2>
+                        <img src="img/nram-automaton.svg" height="300">
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Operations 1/2</h2>
+                        <ol>
+                            <li><code>READ</code></li>
+                            <li><code>ZERO(a, b) = 0</code></li>
+                            <li><code>ONE(a, b) = 1</code></li>
+                            <li><code>TWO(a, b) = 2</code></li>
+                            <li><code>INC(a, b) = (a+1) mod M</code></li>
+                            <li><code>ADD(a, b) = (a+b) mod M</code></li>
+                            <li><code>SUB(a, b) = (a − b) mod M</code></li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Operations 2/2</h2>
+                        <ol start="8">
+                            <li><code>DEC(a, b) = (a − 1) mod M</code></li>
+                            <li><code>LESS-THAN(a, b) = [a < b]</code></li>
+                            <li><code>LESS-OR-EQUAL-THAN(a, b) = [a ≤ b]</code></li>
+                            <li><code>EQUALITY-TEST(a, b) = [a = b]</code></li>
+                            <li><code>MIN(a, b) = min(a, b)</code></li>
+                            <li><code>MAX(a, b) = max(a, b)</code></li>
+                            <li><code>WRITE</code></li>
+                        </ol>
+                    </section>
+                    <section>
+                        <h4>Paper 3: NRAM</h4>
+                        <h2>Training</h2>
+                        <ul>
+                            <li>On input/output pairs only</li>
+                            <li>Fully differentiable</li>
+                            <li>Curriculum learning</li>
+                            <li>Many technical tricks: hard training</li>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="blue">
+                        <h1 style="color:white;">Overview</h1>
+                        <ul style="list-style: none;; color: white;">
+                            <li>Introduction</li>
+                            <li>Paper 1: NP</li>
+                            <li>Paper 2: NPI</li>
+                            <li>Paper 3: NRAM</li>
+                            <li class="fragment highlight-blue">
+                                Comparison
+                            </li>
+                            <li>Bibliography</li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Comparison</h4>
+                        <h2>Some characteristics</h2>
+                        <table class="table table-condensed">
+                            <tr>
+                                <th></th>
+                                <th>NP</th>
+                                <th>NPI</th>
+                                <th>NRAM</th>
+                            </tr>
+                            <tr>
+                                <td>Simple training examples (not traces)</td>
+                                <td class="success">✓</td>
+                                <td class="danger">✗</td>
+                                <td class="success">✓</td>
+                            </tr>
+                            <tr>
+                                <td>Re-usable programs</td>
+                                <td class="danger">✗</td>
+                                <td class="success">✓</td>
+                                <td class="danger">✗</td>
+                            </tr>
+                            <tr>
+                                <td>Neural Programming checklist ok?</td>
+                                <td class="success">✓</td>
+                                <td class="success">✓</td>
+                                <td class="success">✓</td>
+                            </tr>
+                            <tr>
+                                <td>Curriculum learning</td>
+                                <td class="danger">✗</td>
+                                <td class="success">✓</td>
+                                <td class="success">✓</td>
+                            </tr>
+                            <tr>
+                                <td>My favorite</td>
+                                <td class="danger">✗</td>
+                                <td class="success">♡</td>
+                                <td class="danger">✗</td>
+                            </tr>
+                        </table>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="orange">
+                        <h1 style="color:white;">Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Introduction</li>
+                            <li>Paper 1: NP</li>
+                            <li>Paper 2: NPI</li>
+                            <li>Paper 3: NRAM</li>
+                            <li>Comparison</li>
+                            <li class="fragment highlight-blue" >
+                                Bibliography
+                            </li>
+                            <li>Conclusion</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Bibliography</h4>
+                        <h2>Previous Work</h2>
+                        <ul>
+                            <li>
+                                <a href="http://arxiv.org/abs/1410.5401"
+                                   target="_blank">
+                                    Neural Turing Machines
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://arxiv.org/abs/1410.3916"
+                                   target="_blank">
+                                    Memory Networks
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://arxiv.org/abs/1506.03134"
+                                   target="_blank">
+                                    Pointer Networks
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://arxiv.org/abs/1503.01007"
+                                   target="_blank">
+                                    Inferring Algorithmic Patterns
+                                    with Stack-Augmented Recurrent
+                                    Nets
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h4>Bibliography</h4>
+                        <h2>Studied Papers</h2>
+                        <ul>
+                            <li>
+                                <a href="http://arxiv.org/abs/1511.04834"
+                                   target="_blank">
+                                    Neural Programmer: Inducing Latent
+                                    Programs with Gradient Descent
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://arxiv.org/abs/1511.06279"
+                                   target="_blank">
+                                    Neural Programmer-Interpreters
+                                </a>
+                            </li>
+                            <li>
+                                <a href="http://arxiv.org/abs/1511.06392"
+                                   target="_blank">
+                                    Neural Random-Access Machines
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+                <section>
+                    <section data-background="purple" style="color:white;">
+                        <h1>Overview</h1>
+                        <ul style="list-style: none;">
+                            <li>Introduction</li>
+                            <li>Paper 1: NP</li>
+                            <li>Paper 2: NPI</li>
+                            <li>Paper 3: NRAM</li>
+                            <li>Comparison</li>
+                            <li>Bibliography</li>
+                            <li class="fragment highlight-red">
+                                Conclusion
+                            </li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Conclusion</h2>
+                        <ul>
+                            <li>Very interesting papers, ICLR is going to be great!</li>
+                            <li>NPI is onto something with its
+                                hierarchical, re-usable programs</li>
+                            <li>It's only getting started!</li>
+                        </ul>
+                    </section>
+                </section>
+                <section data-background="black">
+                    <h2><span style="color: white;">Thank</span>
+                        <span style="color: gold;">you</span>
+                        <span style="color: pink;">very</span>
+                        <span style="color: red;">much</span>
+                        <span style="color: yellow;">for</span>
+                        <span style="color: green;">your</span>
+                        <span style="color: orange;">attention</span>
+                        <br><span class="text-primary">😍</span></h2>
+                </section>
+                <section data-background="yellow">
+                    <h1>Discussion time!</h1>
+                </section>
+	    </div>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+
+	 // Full list of configuration options available at:
+	 // https://github.com/hakimel/reveal.js#configuration
+	 Reveal.initialize({
+	   controls: true,
+	   progress: true,
+	   history: true,
+	   center: true,
+
+	   transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+	   // Optional reveal.js plugins
+	   dependencies: [
+	     { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+	     { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+	     { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+	     { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+	     { src: 'plugin/zoom-js/zoom.js', async: true },
+	     { src: 'plugin/notes/notes.js', async: true }
+	   ]
+	 });
+
+	</script>
+
+    </body>
+</html>
