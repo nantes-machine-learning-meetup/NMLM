@@ -25,3 +25,7 @@ There are two cultures in the use of statistical modeling to reach conclusions f
 (Approfondi, 403 pages, présence de maths)
 
 Nicolò Cesa-Bianchi, Gábor Lugosi, Prediction, Learning, and Games, Cambridge University Press, 2006.  [pdf](http://www.ii.uni.wroc.pl/~lukstafi/pmwiki/uploads/AGT/Prediction_Learning_and_Games.pdf)
+
+## Video
+
+[ici](https://youtu.be/_K1J8vskn00)
