@@ -7,20 +7,23 @@ from tweepy import OAuthHandler
 from pattern.en import sentiment
 from tweepy.streaming import StreamListener
 
-#consumer key, consumer secret, access token, access secret.
-ckey="MJZOyGbqqHirJZoVLt4hwr5QY"
-csecret="V20ReBIC36u5r0ZliBHiwKZlgjZCruOWdu0JvFvp3ocI8WZN0u"
-atoken="2688211724-ZUx3d7F8g2db5m9whvSFWjvHGgoZvYBFkCjBLcu"
-asecret="hvVhARsXgfnk21uXpP7kZWaOO9fOZfFodiBIvJrwHMqt5"
+#consumer key, consumer secret, access token, access secret : get yours with twitter API
+ckey="XXX"
+csecret="XXX"
+atoken="XXX"
+asecret="XXX"
 
 class listener(StreamListener):
 	def on_data(self, data):
 		try:
 			all_data = json.loads(data)
 			tweet = all_data["text"]
-			print "[Tweet]:\n%s"%self.tweet
+			print "[Tweet]:\n%s"%tweet
 			print "\n[By]: %s"%all_data["user"]["screen_name"]
+			print "[Polarity]: %s"%sentiment(tweet)[0]
+			print "[Subjectivity]: %s"%sentiment(tweet)[1]
 			print "---------------"
+			time.sleep(1)
 		except Exception,e:
 			print str(e)
 			return(True)
