@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+
+  <meta name="author" content="Arnaud Bailly" />
+
+
+  <meta name="dcterms.date" content="September  5, 2016" />
+
+  <title>Understanding word2vec</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="/reveal.js/css/reveal.css"/>
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+    <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    </style>    
+
+
+    <link rel="stylesheet" href="/reveal.js/css/theme/black.css" id="theme">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '/reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+    <!--[if lt IE 9]>
+    <script src="/reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+
+<section>
+    <h1 class="title">Understanding word2vec</h1>
+
+  <h1 class="subtitle">Machine Learning for Dummies</h1>
+
+
+    <h2 class="author">Arnaud Bailly</h2>
+
+    <h3 class="date">September  5, 2016</h3>
+</section>
+
+
+
+<section><section id="motivation" class="titleslide slide level1"><h1>Motivation</h1></section><section id="caveat-emptor" class="slide level2">
+<h1>Caveat Emptor</h1>
+<blockquote>
+<p>All humans have equal intelligence;</p>
+<p>Every human has received from God the faculty of being able to instruct himself;</p>
+<p>We can teach what we don’t know;</p>
+<p>Everything is in everything.</p>
+<p>Joseph Jacotot (1770-1840)</p>
+</blockquote>
+</section><section id="it-all-started" class="slide level2">
+<h1>It all started…</h1>
+<p>as a silly coding challenge to apply for a job:</p>
+<blockquote>
+<p>Extract the top 400 articles from Arxiv corresponding to the query <code>big data</code>, analyze their content using Google’s word2vec algorithm, then run a principal component analysis over the resulting words matrix and display the 100 most frequent words’ position on a 2D figure. In Haskell…</p>
+</blockquote>
+</section><section id="understanding-ml" class="slide level2">
+<h1>Understanding ML</h1>
+<ul>
+<li class="fragment">Going beyond tools</li>
+<li class="fragment">Going beyond (obscure) mathematical formulas and theoretical principles</li>
+<li class="fragment">Acquire intuitions about how ML works and can be used</li>
+</ul>
+</section><section id="challenges" class="slide level2">
+<h1>Challenges</h1>
+<ul>
+<li class="fragment">To understand how word2vec works</li>
+<li class="fragment">To optimize word2vec for large data sets</li>
+<li class="fragment">To complete a data analysis pipeline</li>
+</ul>
+</section></section>
+<section><section id="understanding-basic-word2vec-algorithm" class="titleslide slide level1"><h1>Understanding Basic <code>word2vec</code> Algorithm</h1></section><section id="demo" class="slide level2">
+<h1>Demo</h1>
+</section><section id="principles" class="slide level2">
+<h1>Principles</h1>
+<ul>
+<li class="fragment">Goal: Build a <em>words embedding</em> model, e.g. a function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mo>:</mo><mi>W</mi><mo accent="false">→</mo><msup><mi>R</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">e: W \rightarrow R^d</annotation></semantics></math> that maps each word from a given vocabulary <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math> to a high-dimensional <em>vector</em> space</li>
+<li class="fragment">Word2vec is actually more a <em>family</em> of models:
+<ul>
+<li class="fragment">2 basic models: Continuous Bag-of-Words (CBOW) and <strong>Skip-Gram</strong> and various optimisations</li>
+<li class="fragment">Several variations</li>
+</ul></li>
+</ul>
+</section><section id="principles-1" class="slide level2">
+<h1>Principles</h1>
+<figure>
+<img src="/images/w2v-model.png" />
+</figure>
+</section><section id="skip-gram-model" class="slide level2">
+<h1>Skip-Gram Model</h1>
+<p>Maximises probability of identifying context words for each word of the vocabulary <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mn>1</mn><mi>T</mi></mfrac><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><munder><mo>∑</mo><mrow><mo>−</mo><mi>c</mi><mo>≤</mo><mi>j</mi><mo>≤</mo><mi>c</mi><mo>,</mo><mi>j</mi><mo>≠</mo><mn>0</mn></mrow></munder><mi>log</mi><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mrow><mi>t</mi><mo>+</mo><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>w</mi><mi>t</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
+\frac{1}{T} \sum_{t=1}^{T} \sum_{-c\leq j \leq c, j\neq 0} \log p(w_{t+j}|w_t)
+</annotation></semantics></math></p>
+<ul>
+<li class="fragment"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>T</mi><annotation encoding="application/x-tex">T</annotation></semantics></math> is the size of the vocabulary <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>j</mi></msub><annotation encoding="application/x-tex">w_j</annotation></semantics></math> is the <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>-th word of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math></li>
+<li class="fragment"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>c</mi><annotation encoding="application/x-tex">c</annotation></semantics></math> is the size of the <em>context window</em></li>
+</ul>
+</section><section id="skip-gram-model-1" class="slide level2">
+<h1>Skip-Gram Model</h1>
+<p>Define conditional probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>w</mi><mi>′</mi><mo stretchy="false" form="prefix">|</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">p(w&#39;|w)</annotation></semantics></math> using <em>softmax</em> function:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mi>O</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>w</mi><mi>I</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>exp</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><msubsup><mi>′</mi><msub><mi>w</mi><mi>O</mi></msub><mi>⊤</mi></msubsup><msub><mi>v</mi><msub><mi>w</mi><mi>I</mi></msub></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mi>exp</mi><mo stretchy="false" form="prefix">(</mo><mi>v</mi><msubsup><mi>′</mi><msub><mi>w</mi><mi>i</mi></msub><mi>⊤</mi></msubsup><msub><mi>v</mi><msub><mi>w</mi><mi>I</mi></msub></msub><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+p(w_O|w_I) = \frac{\exp(v&#39;_{w_O}^{\top} v_{w_I})}{\sum_{i=1}^{T} \exp(v&#39;_{w_i}^{\top} v_{w_I})}
+</annotation></semantics></math></p>
+</section><section id="neural-network" class="slide level2">
+<h1>Neural Network</h1>
+<figure>
+<img src="/images/w2v-nn.png" />
+</figure>
+</section><section id="feed-forward" class="slide level2">
+<h1>Feed Forward</h1>
+<figure>
+<img src="/images/w2v-ff.png" />
+</figure>
+</section><section id="back-propagation" class="slide level2">
+<h1>Back-Propagation</h1>
+<figure>
+<img src="/images/w2v-backprop-output.png" />
+</figure>
+</section><section class="slide level2">
+
+<figure>
+<img src="/images/w2v-backprop-input.png" />
+</figure>
+</section><section class="slide level2">
+
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mrow><mi>n</mi><mi>e</mi><mi>w</mi></mrow></msub><mi>′</mi><mo>=</mo><mi>W</mi><mi>′</mi><mo>−</mo><mi>α</mi><msub><mi>G</mi><mi>O</mi></msub></mrow><annotation encoding="application/x-tex">
+W_{new}&#39; = W&#39; - \alpha G_O
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><msub><mi>I</mi><mrow><mi>n</mi><mi>e</mi><mi>w</mi></mrow></msub></msub><mo>=</mo><msub><mi>w</mi><mi>I</mi></msub><mo>−</mo><mi>α</mi><mi>h</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">
+w_I_{new} = w_I - \alpha h&#39;
+</annotation></semantics></math></p>
+</section><section id="naive-code-in-haskell" class="slide level2">
+<h1>(Naive) Code in Haskell</h1>
+</section><section id="visualizing-word2vec-with-wevi" class="slide level2">
+<h1>Visualizing word2vec with wevi</h1>
+</section></section>
+<section><section id="optimizing" class="titleslide slide level1"><h1>Optimizing</h1></section><section id="problem" class="slide level2">
+<h1>Problem</h1>
+<ul>
+<li class="fragment">While correct and straightforward, complexity of basic implementation is huge: For each sample, we need to compute error gradient over <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>W</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">W&#39;</annotation></semantics></math> which has size <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>x</mi><mi>D</mi></mrow><annotation encoding="application/x-tex">T x D</annotation></semantics></math>.</li>
+<li class="fragment">Training speed is about <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mn>20</mn><mrow><mi>t</mi><mi>h</mi></mrow></msup></mrow><annotation encoding="application/x-tex">1/20^{th}</annotation></semantics></math> of reference implementation</li>
+<li class="fragment">Major contribution of word2vec papers is their ability to handle billions of words…</li>
+<li class="fragment">How can they do it?</li>
+</ul>
+</section><section id="proposed-optimisations" class="slide level2">
+<h1>Proposed Optimisations</h1>
+<ul>
+<li class="fragment">Input words sub-sampling: Randomly discard frequent words while keeping relative frequencies identical</li>
+<li class="fragment">Parallelize training</li>
+<li class="fragment">Negative sampling</li>
+<li class="fragment"><strong>Hierarchical Softmax</strong></li>
+</ul>
+</section><section id="hierarchical-softmax" class="slide level2">
+<h1>Hierarchical Softmax</h1>
+<p><strong>Idea</strong>: Approximate probability over <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math> with probabilities over <em>binary encoding</em> of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math></p>
+<ul>
+<li class="fragment">Output vectors encode a word’s <em>path</em> within the binary tree</li>
+<li class="fragment">Reduces complexity of model training to updating <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>log</mi><mo stretchy="false" form="prefix">(</mo><mi>V</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\log(V)</annotation></semantics></math> output vectors instead of <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math></li>
+</ul>
+</section><section id="huffman-tree" class="slide level2">
+<h1>Huffman Tree</h1>
+<figure>
+<img src="/images/w2v-huffman.png" />
+</figure>
+</section><section id="huffman-tree-1" class="slide level2">
+<h1>Huffman Tree</h1>
+<ul>
+<li class="fragment">Huffman coding encode words according to their frequencies: More frequent words are assigned shorter codes</li>
+<li class="fragment">To each word is assigned a path in the Huffman tree which tells, for each node, whether to go left or right</li>
+<li class="fragment">Each node is assigned a row in the output matrix</li>
+</ul>
+</section><section id="original-code" class="slide level2">
+<h1>Original Code</h1>
+<figure>
+<img src="/images/w2v-code.png" />
+</figure>
+</section><section id="less-naive-haskell-code" class="slide level2">
+<h1>Less naive Haskell Code</h1>
+</section></section>
+<section><section id="more-challenges" class="titleslide slide level1"><h1>More Challenges</h1></section><section id="functional-programming" class="slide level2">
+<h1>Functional Programming</h1>
+<ul>
+<li class="fragment">Haskell is a pure lazy functional programming</li>
+<li class="fragment">Data is immutable which leads to inefficiencies when modifying very large data structures <em>naïvely</em></li>
+<li class="fragment">Need to use mutable data structures and <em>impure</em> code</li>
+</ul>
+</section><section id="data-acquisition" class="slide level2">
+<h1>Data Acquisition</h1>
+<ul>
+<li class="fragment">Retrieve PDFs from Arxiv site</li>
+<li class="fragment">Extract textual from PDF</li>
+<li class="fragment">Cleanup text for analysis</li>
+</ul>
+</section><section id="data-visualisation" class="slide level2">
+<h1>Data Visualisation</h1>
+<figure>
+<img src="https://www.tensorflow.org/versions/r0.10/images/linear-relationships.png" />
+</figure>
+</section><section class="slide level2">
+
+<ul>
+<li class="fragment">Find some way to reduce dimensionality of space</li>
+<li class="fragment">Most well-known technique is <strong>Principal Component Analysis</strong></li>
+<li class="fragment">Other techniques: t-SNE</li>
+</ul>
+</section><section id="computing-pca" class="slide level2">
+<h1>Computing PCA</h1>
+<ul>
+<li class="fragment">Standard tool from statistical analysis and linear algebra</li>
+<li class="fragment">Transform the “basis” of the vector space to order then by decreasing amount of variance</li>
+<li class="fragment">Select the first 2 or 3 axis to display data on 2D or 3D diagram</li>
+</ul>
+</section><section id="optimizing-pca" class="slide level2">
+<h1>Optimizing PCA</h1>
+<figure>
+<img src="/images/w2v-pca-perf-bench.png" />
+</figure>
+</section><section class="slide level2">
+
+<ul>
+<li class="fragment">Textbook computation of PCA means computing full covariance matrix for dataset then eigenvectors of this covariance matrix</li>
+<li class="fragment">For a 50000 x 200 matrix this is extremely time consuming…</li>
+<li class="fragment">There exist iterative methods to compute principal components one at a time</li>
+</ul>
+</section></section>
+<section><section id="conclusions" class="titleslide slide level1"><h1>Conclusions</h1></section><section id="machine-learning-is-hard" class="slide level2">
+<h1>Machine Learning is Hard</h1>
+<ul>
+<li class="fragment"><em>In theory</em>: Get some data, find a suitable model, fit model to data using standard logistic regression, use model</li>
+<li class="fragment"><em>In practice</em>:
+<ul>
+<li class="fragment">Datasets need to be large which means algorithms need to be efficient</li>
+<li class="fragment">Efficient algorithms require clever optimisations that are non obvious</li>
+<li class="fragment">Hard to get “right”…</li>
+</ul></li>
+</ul>
+</section><section id="machine-learning-is-hard-2" class="slide level2">
+<h1>Machine Learning is Hard (2)</h1>
+<ul>
+<li class="fragment">Still an active research field: Going from research paper to tool is not straightforward</li>
+<li class="fragment">Reverse engineering code was a painful process</li>
+<li class="fragment">To really understand what one’s doing requires understanding large chunks of maths: Linear algebra, statistics, numerical analysis, Natural Language Processing…</li>
+</ul>
+</section><section id="machine-learning-is-fun" class="slide level2">
+<h1>Machine Learning is Fun</h1>
+<ul>
+<li class="fragment">Stretches your programming skills beyond their limits</li>
+<li class="fragment">Forces you to tackle new concepts, techniques and algorithms</li>
+<li class="fragment">Expands knowledge base to cutting edge technology</li>
+<li class="fragment">Increases his/her love for you</li>
+</ul>
+</section><section id="takeaways" class="slide level2">
+<h1>Takeaways</h1>
+<ul>
+<li class="fragment">There is no better way to understand algorithms than to implement them</li>
+<li class="fragment">For production, don’t roll your own ML engine unless:
+<ul>
+<li class="fragment">that’s your core skills domain</li>
+<li class="fragment">and/or you are prepared to spend time and money</li>
+</ul></li>
+</ul>
+</section><section id="references" class="slide level2">
+<h1>References</h1>
+<ul>
+<li class="fragment"><a href="http://arxiv.org/pdf/1301.3781.pdf">Original word2vec paper</a></li>
+<li class="fragment">Word2vec implementations: <a href="https://github.com/dav/word2vec">original C version</a>, <a href="https://radimrehurek.com/gensim/models/word2vec.html">gensim</a>, <a href="https://www.tensorflow.org/versions/r0.10/tutorials/word2vec/index.html">Google’s TensorFlow</a>, <a href="http://spark.apache.org/docs/latest/mllib-feature-extraction.html#word2vec">spark-mllib</a>, <a href="https://github.com/medallia/Word2VecJava">Java</a>…</li>
+<li class="fragment"><a href="https://github.com/ronxin/wevi">Visualizing word2vec</a> and <a href="http://www-personal.umich.edu/~ronxin/pdf/w2vexp.pdf">word2vec Parameter Learning Explained</a></li>
+<li class="fragment"><a href="http://rare-technologies.com/deep-learning-with-word2vec-and-gensim/">Implementing word2vec in Python</a></li>
+<li class="fragment">Word2vec in Java as part of <a href="http://deeplearning4j.org/word2vec#just">deeplearning4j</a> (although word2vec is <strong>NOT</strong> deep learning…)</li>
+<li class="fragment"><a href="http://rare-technologies.com/making-sense-of-word2vec/">Making sense of word2vec</a></li>
+<li class="fragment"><a href="http://arxiv.org/pdf/1402.3722v1.pdf">word2vec Explained</a></li>
+<li class="fragment"><a href="https://github.com/abailly/hs-word2vec">word2vec in Haskell</a></li>
+</ul>
+</section></section>
+<section><section id="questions-feedback" class="titleslide slide level1"><h1>Questions &amp; Feedback</h1></section></section>
+    </div>
+  </div>
+
+
+  <script src="/reveal.js/lib/js/head.min.js"></script>
+  <script src="/reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        theme: 'old-english', // available themes are in /css/theme
+        transition: 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: '/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: '/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+//          { src: '/reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+//          { src: '/reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+]});
+    </script>
+  </body>
+</html>
