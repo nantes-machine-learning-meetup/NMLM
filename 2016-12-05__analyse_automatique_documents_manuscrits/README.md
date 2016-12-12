@@ -13,3 +13,7 @@ Adeline Granet est sortie du master ATAL à l'Université de Nantes en 2015, pui
 * A. Graves, 2006, Connectionist Temporal Classification: Labelling Unsegmented Sequence Data with Recurrent Neural Networks. [[pdf](http://www.cs.toronto.edu/~graves/icml_2006.pdf)]
 
 *A. Graves, 2009, A Novel Connectionist System for Unconstrained Handwriting Recognition. [[pdf](http://www.cs.toronto.edu/~graves/tpami_2009.pdf)]
+
+# Livestream
+
+https://www.youtube.com/watch?v=AtKBV_0BZGI
