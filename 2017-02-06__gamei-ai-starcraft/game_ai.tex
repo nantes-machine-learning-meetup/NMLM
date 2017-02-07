@@ -1,0 +1,800 @@
+\documentclass[smaller]{beamer}
+\usepackage{etex}
+
+\mode<presentation>
+{
+  
+  \usetheme{Warsaw}
+  
+  \usecolortheme{seahorse}
+  \usecolortheme{rose}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  
+  \newcommand*\oldmacro{}
+  \let\oldmacro\insertshorttitle% save previous definition
+  \renewcommand*\insertshorttitle{%
+    \oldmacro\hfill%
+    \insertframenumber\,/\,\inserttotalframenumber}
+  
+  \newtheorem{proposition}{Proposition}
+  
+}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = blue, %Colour of internal links
+  citecolor   = red %Colour of citations
+}
+
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+% \usepackage{algorithmicx}
+% \usepackage{algpseudocode}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage{pstricks,pst-node}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{caption}
+\usepackage{textpos}
+% \usepackage{multimedia}
+% \usepackage{listings}
+
+\setbeamercovered{invisible}
+\setbeamertemplate{itemize item}[triangle]
+\setbeamertemplate{headline}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\alertblue}[1]{${\blue #1}$}
+\newcommand{\csp}{\textsc{CSP}\xspace}
+\newcommand{\cop}{\textsc{COP}\xspace}
+\newcommand{\ghost}{\textsc{GHOST}\xspace}
+
+\title[Game AI]{Game AI : de Starcraft et au--delà}
+\author[Florian Richoux]{Florian Richoux}
+\date[06/02/17]{6 février 2017}
+
+% \titlegraphic{
+%   \centering
+%   \includegraphics[width=\linewidth]{../figs/logos}
+%   % \hfill  
+%   % \includegraphics[width=0.35\linewidth]{../figs/logo_ls2n} 
+% }
+
+\AtBeginSection[] % pour mettre la table des matières 
+%                 % au début de chaque section
+{ 
+  \begin{frame}
+    \frametitle{Sommaire} 
+    \tableofcontents[currentsection] 
+  \end{frame} 
+}
+
+
+\begin{document}
+%\lstset{language=C++,basicstyle=\footnotesize,keywordstyle=\color{red}\bfseries,
+%  commentstyle=\color{violet}\textit,stringstyle=\color{blue}\ttfamily}%,labelstyle=\tiny}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Pourquoi le Game AI ?}
+
+\begin{frame}
+  \frametitle{Le Game AI, c'est quoi ?}
+
+  \centerline{\includegraphics[width=\linewidth]{./figs/uab}}
+  
+  \bigskip
+
+  \begin{exampleblock}{Une définition possible}
+    Ensemble de méthodes, techniques  et connaissances en intelligence
+    artificielle pour \alert{traiter des problèmes} appliqués aux jeux.
+  \end{exampleblock}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Pourquoi le Game AI ?}
+
+  \begin{textblock*}{3cm}(8cm, -2.9cm)
+    \includegraphics[width=\linewidth]{figs/controller}
+  \end{textblock*}
+
+  \centerline{\huge \bf 10 raisons de faire}
+
+  \medskip
+
+  \centerline{\huge \bf de la recherche en Game AI}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{C'est fun !}
+
+  \centerline{\includegraphics[width=0.5\linewidth]{./figs/Turing}}
+
+  \begin{block}{}
+    ``It would be disingenuous of us to disguise  the fact that  the principal motive which  prompted the work was the \alert{sheer fun of the thing}.''
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{L'industrie du jeu}
+
+  \centerline{\includegraphics[width=0.8\linewidth]{./figs/industry}}
+
+  \bigskip
+
+  \begin{block}{}
+    Une \alert{vraie industrie}, avec ses problématiques, ses besoins et ses attentes.
+  \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Vulgarisation scientifique}
+
+  \centerline{\includegraphics[width=0.6\linewidth]{./figs/vulgarisation}}
+
+  \bigskip
+
+  \begin{block}{}
+    Les jeux parlent à \alert{tout le monde} : il est facile d'expliquer des idées et concepts via leur prisme.
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Plus pratique que d'autres domaines d'application}
+
+  \centerline{\includegraphics[width=0.7\linewidth]{./figs/robot}}
+
+  %\bigskip
+
+  \begin{block}{}
+    Par exemple \alert{plus pratique} que la robotique : 
+    \begin{itemize}
+    \item dématérialisé, 
+    \item moins cher,
+    \item contrôle du flux temporel, $\ldots$
+    \end{itemize}
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Identification des experts}
+
+  \centerline{\includegraphics[width=0.35\linewidth]{./figs/flash}}
+
+  %\bigskip
+
+  \begin{block}{}
+    Compétitions internationales dans beaucoup de jeux : les vainqueurs sont bien placés pour apporter leur \alert{expertise}.
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Grande masse de données accessible}
+
+  \centerline{\includegraphics[width=0.8\linewidth]{./figs/data}}
+
+  \hspace{7cm} {\tiny PhD Comics - Jorge Cham}
+
+  \medskip
+
+  \begin{block}{}
+    Grande \alert{collection de parties} analysable, gratuite, souvent libre d'accès sans problème de confidentialité.
+  \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Excellent environnement pour l'interaction homme-machine}
+
+  \centerline{\includegraphics[width=0.7\linewidth]{./figs/interaction}}
+
+  \bigskip
+
+  \begin{block}{}
+    \alert{Interactions} coopératives ou compétitives à une échelle massive.\\ Implique des
+    compétences de communication et d'interaction sociale.
+  \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Nature d'un jeu}
+
+  \centerline{\includegraphics[width=0.8\linewidth]{./figs/tetris}}
+
+  \bigskip
+
+  \begin{block}{}
+    Jeu : environnement où on doit  prendre une  suite  de  décisions,  avec une métrique  claire de  succès (score).\\Terrain idéal d'\alert{apprentissage}.
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Multitude de frameworks}
+
+  \begin{itemize}
+  \item StarCraft 1 API (BWAPI ; competitions AIIDE, CIG, SSCAIT)
+    \medskip
+  \item StarCraft 2 API (Google DeepMind + Blizzard)
+    \medskip
+  \item Minecraft Malmö (Microsoft Research)
+    \medskip
+  \item Universe (Open AI)
+    \medskip
+  \item DeepMind Labs (Google DeepMind)
+    \medskip
+  \item TorchCraft (Facebook)
+    \medskip
+  \item General Video Game AI (Univ. of Essex + Google DeepMind)
+    \medskip
+  \item General Game Playing (Stanford Univ., AAAI)
+    \medskip
+  \item Fighting Game AI (Ritsumeikan Univ., CIG)
+    \medskip
+  \item $\ldots$
+  \end{itemize}
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Simplification du monde}
+
+  \centerline{\includegraphics[width=0.6\linewidth]{./figs/real_world_2}}
+
+  \bigskip
+
+  \begin{block}{}
+    \alert{Petit monde} : règles  plus simples,  espace plus restreint, interactions plus limitées, mais assez  riche et  complexe pour contenir des problèmes scientifiquement pertinents.
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{IA et ML dans StarCraft}
+
+\begin{frame}
+  \frametitle{StarCraft}
+
+  \begin{block}{Les principes}
+    \begin{itemize}
+    \item 1 contre 1 en temps réel (pas de tour par tour).
+    \item Très grande {\it carte} couverte par un {\it brouillard de guerre},
+    \item Gérer une base, collecter des ressources, entraîner et gérer
+      une armée pour rouler sur son adversaire.
+    \end{itemize}
+  \end{block}
+
+  \begin{center}
+    {
+      \includegraphics[width=0.4\linewidth]{figs/broodwar}
+      \hspace{0.5cm}
+      \includegraphics[width=0.4\linewidth]{figs/broodwar2} 
+    }
+  \end{center}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Problèmes et méthodes}
+
+  \begin{textblock*}{9.5cm}(0.5cm, -3.25cm)
+    \begin{alertblock}{Quelques problèmes}
+      \begin{itemize}
+      \item Gestion/allocation de ressources (macro-management),
+      \item Attribution de cibles (micro-management),
+      \item Reconnaissance de stratégie,
+      \item Prise de décision sous incertitude,
+      \item Ordonnancement de production/construction (build order),
+      \item \ldots
+      \end{itemize}
+    \end{alertblock}
+  \end{textblock*}
+  
+  \pause 
+
+  \begin{textblock*}{5.5cm}(0cm, 1cm)
+    \begin{exampleblock}{Quelques méthodes d'IA$\ldots$}
+      \begin{itemize}
+      \item Recherche arborescence,
+      \item Case-based reasoning,
+      \item Algorithmes génétiques,
+      \item Programmation par contraintes,
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}
+
+  \begin{textblock*}{4cm}(6.5cm, 1cm)
+    \begin{exampleblock}{$\ldots$et de ML}
+      \begin{itemize}
+      \item Modèles bayésiens,
+      \item Modèles markoviens,
+      \item Réseaux de neurones,
+      \item \ldots
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[noframenumbering]
+  \frametitle{Problèmes et méthodes}
+
+  \begin{textblock*}{9.5cm}(0.5cm, -3.25cm)
+    \begin{alertblock}{Quelques problèmes}
+      \begin{itemize}
+      \item Gestion/allocation de ressources (macro-management),
+      \item Attribution de cibles (micro-management),
+      \item {\blue Reconnaissance de stratégie},
+      \item Prise de décision sous incertitude,
+      \item \alert{Ordonnancement de production/construction (build order)},
+      \item \ldots
+      \end{itemize}
+    \end{alertblock}
+  \end{textblock*}
+  
+  \begin{textblock*}{5.5cm}(0cm, 1cm)
+    \begin{exampleblock}{Quelques méthodes d'IA$\ldots$}
+      \begin{itemize}
+      \item Recherche arborescence,
+      \item Case-based reasoning,
+      \item \alert{Algorithmes génétiques},
+      \item Programmation par contraintes,
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}
+
+  \begin{textblock*}{4cm}(6.5cm, 1cm)
+    \begin{exampleblock}{$\ldots$et de ML}
+      \begin{itemize}
+      \item Modèles bayésiens,
+      \item {\blue Modèles markoviens},
+      \item Réseaux de neurones,
+      \item \ldots
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{}
+
+  \begin{textblock*}{2cm}(0cm, -2cm)
+    \includegraphics[width=\linewidth]{figs/ceiling_markov}
+  \end{textblock*}
+  
+  \centerline{\huge \bf Prédire la stratégie adverse}
+
+  \bigskip
+
+  \centerline{\huge \bf avec un modèle de Markov caché}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Chaîne de Markov}
+
+  \begin{textblock*}{8.25cm}(1.3cm, -3.3cm)
+    \centerline{\def\svgwidth{\columnwidth}\input{figs/chaine_markov2.pdf_tex}}
+  \end{textblock*}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Modèle de Markov {\bf caché}}
+
+  \centerline{\def\svgwidth{\columnwidth}\input{figs/HMMGraph.pdf_tex}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Entraîner un modèle de Markov caché}
+
+  \centerline{\def\svgwidth{\columnwidth}\input{figs/HMMLearn.pdf_tex}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Requêtes sur un modèle de Markov caché}
+
+  \begin{exampleblock}{Type de questions exploitant ce modèle}
+    \begin{itemize}
+    \item Étant donné une séquence  d'observations,\\dans quel état je me
+      trouve probablement ?
+      \medskip
+    \item  Étant donné  une  séquence d'observations,\\quelles sont  les
+      prochaines observations les plus probables ?
+      \medskip
+    \item  Étant  donné  une  séquence  d'observations,\\quelle  est  la
+      probabilité d'observer $x$ dans $n$ tours ?
+    \end{itemize}
+  \end{exampleblock}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{\small Dereszynski et al. - Learning Probabilistic Behavior
+    Models in RTS Games}
+
+  \begin{block}{Problème de reconnaissance de stratégie}
+    \begin{itemize}
+    \item Stratégie = choix des unités et bâtiments produits.
+    \item 1 observation toutes les 30s, pendant les 7 premières minutes
+      de jeu.
+    \end{itemize}
+  \end{block}
+
+  \pause
+  
+  \bigskip
+
+  \begin{exampleblock}{Leur modèle}
+    \begin{itemize}[<+->]
+    \item Modèle appris sur 331 replays de joueurs pros.
+    \item 30 états (ils ont fait plusieurs essais).
+    \item Observations =  vecteur $v$ de booléens. $v[x]$  est vrai si
+      au  moins  une unité  $x$  a  été  produite depuis  la  dernière
+      observation.
+    \item  Hypothèse que  les probabilités  de productions  des unités
+      d'une même observation sont indépendantes (!!!).
+    \end{itemize}
+  \end{exampleblock}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Intuition de l'algorithme Espérance-Maximisation}
+
+  \centerline{\def\svgwidth{\columnwidth}\input{figs/HMMSC.pdf_tex}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Intuition de l'algorithme Espérance-Maximisation}
+
+  \begin{textblock*}{11cm}(0cm, -2cm)
+    \only<1>{\centerline{\includegraphics[width=\linewidth]{figs/em_1}}}
+    \only<2>{\centerline{\includegraphics[width=\linewidth]{figs/em_2}}}
+    \only<3>{\centerline{\includegraphics[width=\linewidth]{figs/em_4}}}
+    \only<4>{\centerline{\includegraphics[width=\linewidth]{figs/em_4_5}}}
+    \only<5>{\centerline{\includegraphics[width=\linewidth]{figs/em_5}}}
+    \only<6>{\centerline{\includegraphics[width=\linewidth]{figs/em_6}}}
+    \only<7>{\centerline{\includegraphics[width=\linewidth]{figs/em_7}}}
+    \only<8>{\centerline{\includegraphics[width=\linewidth]{figs/em_8}}}
+    \only<9>{\centerline{\includegraphics[width=\linewidth]{figs/em_9}}}
+  \end{textblock*}
+  
+  \begin{textblock*}{8cm}(2cm, 2cm)
+    {\tiny Copyright Victor Lavrenko :
+      \href{https://youtu.be/REypj2sy_5U}{youtu.be/REypj2sy\_5U}         et
+      \href{https://youtu.be/iQoXFmbXRJA}{youtu.be/iQoXFmbXRJA}}
+  \end{textblock*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{\small Dereszynski et al. - Learning Probabilistic Behavior
+    Models in RTS Games}
+
+  \centerline{\includegraphics[width=\linewidth]{figs/the_model}}
+
+  \pause 
+
+  \medskip
+
+  \begin{alertblock}{Requêtes}
+    \begin{itemize}[<+->]
+    \item Étant donné  tout ce que j'ai observé depuis  le début de la
+      partie, quelle  est la probabilité que  mon adversaire produise
+      l'unité x dans 30s ? 1min?
+    \item Étant donné  tout ce que j'ai observé depuis  le début de la
+      partie,  quel  est  l'état  le plus  probable  dans  lequel  mon
+      adversaire se  situe ?
+    \end{itemize}
+  \end{alertblock}
+  
+\end{frame}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{}
+
+  \begin{textblock*}{4cm}(7.5cm, 1.5cm)
+    \includegraphics[width=\linewidth]{figs/zergling_gene}
+  \end{textblock*}
+  
+  \centerline{\huge \bf Build order}
+
+  \bigskip
+
+  \centerline{\huge \bf avec un algo génétique}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Principes}
+
+  \centerline{\includegraphics[width=\linewidth]{figs/genetic1}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Cross-over}
+
+  \centerline{\includegraphics[width=\linewidth]{figs/genetic5}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Modèle pour le build order}
+
+  \begin{textblock*}{3cm}(0cm, -3cm)
+    \begin{block}{Objectif : 7 roaches}
+      \begin{enumerate}
+      \item Drone
+      \item Drone
+      \item Drone
+      \item Spawning Pool
+      \item Extractor
+      \item Drone
+      \item Drone
+      \item Drone
+      \item Overlord
+      \item Roach Warren
+      \item Drone
+      \item Drone
+      \item $\ldots$
+      \end{enumerate}
+    \end{block}
+  \end{textblock*}
+
+  \pause
+
+  \begin{textblock*}{7cm}(4cm, -1cm)
+    \begin{exampleblock}{Déroulement}
+      \begin{itemize}[<+->]
+      \item Mesure de qualité = durée du build order,
+      \item On garde les $x$\% meilleurs individus,
+      \item On copie des individus pour repeupler,
+      \item Pas de cross-over,
+      \item Plein de mutations.
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}  
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\begin{frame}
+  \frametitle{Build order : pas de cross-over}
+
+  \begin{textblock*}{3cm}(2cm, -3cm)
+    \begin{block}{Objectif : 7 roaches}
+      \begin{enumerate}
+      \item Drone
+      \item Drone
+      \item Drone
+      \item Spawning Pool
+      \item Extractor
+      \item Drone
+      \item Drone
+      \item Drone
+      \item Overlord
+      \item Roach Warren
+      \item Drone
+      \item Drone
+      \item $\ldots$
+      \end{enumerate}
+    \end{block}
+  \end{textblock*}
+  
+  \pause
+
+  \begin{textblock*}{3cm}(6cm, -3cm)
+    \begin{alertblock}{Objectif : 7 roaches}
+      \begin{enumerate}
+      \item Overlord
+      \item Overlord
+      \item Drone
+      \item Drone
+      \item Spawning Pool
+      \item Drone
+      \item Drone
+      \item Extractor
+      \item Drone
+      \item Drone
+      \item Drone
+      \item Roach Warren
+      \item $\ldots$
+      \end{enumerate}
+    \end{alertblock}
+  \end{textblock*}
+
+  \pause
+
+  \begin{textblock*}{9cm}(1cm, -0.1cm)
+    \rule{9cm}{0.5pt}
+  \end{textblock*}  
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Build order : mutations}
+
+  \begin{exampleblock}{Types de mutation}
+    \begin{itemize}
+    \item Ajouter une production aléatoire à une place aléatoire,
+      \medskip
+    \item Retirer une production aléatoire à une place aléatoire,
+      \medskip
+    \item Échanger deux productions.
+    \end{itemize}
+  \end{exampleblock}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Comment s'y mettre ?}
+
+\begin{frame}
+  \frametitle{Comment s'y mettre ?}
+
+  \begin{block}{Lire la littérature, souvent accessible gratuitement :}
+    \begin{itemize}
+    \item Actes de la conférence \href{http://www.aaai.org/Press/Proceedings/proceedings.php}{AIIDE}
+    \item Actes de la conférence \href{http://www.ieee-cig.org/proceedings/}{CIG}
+    \item Journal \href{http://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=4804728}{TCIAIG} (malheureusement pas gratuit)
+    \end{itemize}
+  \end{block}
+
+  \medskip
+
+  \begin{exampleblock}{Quelques surveys}
+    \begin{itemize}
+    \item \href{http://www.aaai.org/ojs/index.php/aimagazine/article/view/2478/2457}{A
+        Review of Real-Time Strategy Game AI}
+    \item \href{http://richoux.fr/publications/ecgg15_chapter-rts_ai.pdf}{RTS
+        AI Problems and Techniques}
+    \item \href{http://richoux.fr/publications/ecgg16_chapter-sc_competitions.pdf}{ StarCraft
+        Bots and Competitions}
+    \end{itemize}
+  \end{exampleblock}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Comment s'y mettre ?}
+
+  \begin{textblock*}{4cm}(0.5cm, -1.5cm)
+    \includegraphics[width=\linewidth]{./figs/i_want_you} 
+  \end{textblock*}
+
+  \begin{textblock*}{4.5cm}(5.5cm, -1.75cm)
+    \begin{exampleblock}{StarCraft AI}
+      \begin{itemize}
+      \item \href{http://www.starcraftai.com}{www.starcraftai.com}
+      \item \href{http://bwapi.github.io/}{bwapi.github.io}
+      \item \href{https://github.com/davechurchill/ualbertabot}{UAlbertaBot}
+      \end{itemize}
+      Compétitions :
+      \begin{itemize}
+      \item \href{http://www.cs.mun.ca/~dchurchill/starcraftaicomp/}{AIIDE}
+      \item \href{http://cilab.sejong.ac.kr/sc_competition/}{CIG}
+      \item \href{http://sscaitournament.com/}{sscaitournament.com}
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Questions ?}
+
+  \begin{textblock*}{9cm}(2cm, -3.2cm)
+    \includegraphics[width=0.075\linewidth]{./figs/email} \quad \Large{\href{mailto:florian.richoux@univ-nantes.fr}{florian.richoux@univ-nantes.fr}}
+  \end{textblock*}
+  \begin{textblock*}{6cm}(2.1cm, -2.3cm)
+    \includegraphics[width=0.085\linewidth]{./figs/twitter} \quad \Large{@FloRicx}
+  \end{textblock*}
+  \begin{textblock*}{7.5cm}(1.75cm, -1.5cm)
+    \includegraphics[width=\linewidth]{./figs/questions}
+  \end{textblock*}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

@@ -1,0 +1,63 @@
+%% Creator: Inkscape inkscape 0.48.4, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'chaine_markov.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{433.5074067bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.52582815)%
+    \put(0,0){\includegraphics[width=\unitlength]{figs/chaine_markov.pdf}}%
+    \put(0.44246162,0.39830878){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{D{\'e}but}}}%
+    \put(0.14859833,0.10496476){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Pluie}}}%
+    \put(0.74218538,0.10473949){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{Soleil}}}%
+    \put(0.35959139,0.26071198){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0.6}}}%
+    \put(0.62129159,0.27727713){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0.4}}}%
+    \put(0.0364935,0.06058857){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0.7}}}%
+    \put(0.9267442,0.06779102){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0.6}}}%
+    \put(0.4686581,0.17527408){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0.3}}}%
+    \put(0.47477537,0.08574538){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{0.4}}}%
+  \end{picture}%
+\endgroup%
