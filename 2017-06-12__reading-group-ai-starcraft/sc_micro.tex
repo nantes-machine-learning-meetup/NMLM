@@ -1,0 +1,491 @@
+\documentclass[smaller]{beamer}
+\usepackage{etex}
+
+\mode<presentation>
+{
+  
+  \usetheme{Warsaw}
+  
+  \usecolortheme{seahorse}
+  \usecolortheme{rose}
+  \usefonttheme{professionalfonts}
+  \usefonttheme[onlymath]{serif}
+  
+  \newcommand*\oldmacro{}
+  \let\oldmacro\insertshorttitle% save previous definition
+  \renewcommand*\insertshorttitle{%
+    \oldmacro\hfill%
+    \insertframenumber\,/\,\inserttotalframenumber}
+  
+  \newtheorem{proposition}{Proposition}
+  
+}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = blue, %Colour of internal links
+  citecolor   = red %Colour of citations
+}
+
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+
+\usepackage{url}
+\usepackage{xspace}
+\usepackage{pstricks,pst-node}
+\usepackage{multirow}
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{caption}
+\usepackage{textpos}
+
+\setbeamercovered{invisible}
+\setbeamertemplate{itemize item}[triangle]
+\setbeamertemplate{headline}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\alertblue}[1]{${\blue #1}$}
+\newcommand{\csp}{\textsc{CSP}\xspace}
+\newcommand{\cop}{\textsc{COP}\xspace}
+\newcommand{\ghost}{\textsc{GHOST}\xspace}
+
+\title[Reading group StarCraft AI]{Reading Group: Episodic Exploration for Deep Deterministic Policies}
+\author{Florian Richoux}
+\date[12/06/17]{Nantes Machine Learning Meetup\\12 juin 2017}
+
+% \titlegraphic{
+%   \centering
+%   \includegraphics[width=\linewidth]{../figs/logos}
+% }
+
+\AtBeginSection[] % pour mettre la table des matières 
+%                 % au début de chaque section
+{ 
+  \begin{frame}
+    \frametitle{Sommaire} 
+    \tableofcontents[currentsection] 
+  \end{frame} 
+}
+
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Contexte, intro et motivation}
+
+\begin{frame}
+  \frametitle{À propos de ce papier}
+
+  \centerline{\includegraphics[width=0.5\linewidth]{./figs/fair}}
+
+  \bigskip
+
+  \uncover<2->
+  {
+    \begin{block}{Ce qu'est ce papier}
+      \begin{itemize}
+      \item<2-> Le premier papier sur du deep learning avec StarCraft.
+      \item<3-> Une proposition de scénarii de micro-gestion.
+      \item<4-> Un nouvel algo {\it gradient-free} d'apprentissage par renforcement.
+      \item<5-> Beaucoup de sueur (TorchCraft \href{https://arxiv.org/abs/1611.00625}{arxiv.org/abs/1611.00625}).
+      \end{itemize}
+    \end{block}
+  }
+  
+  \medskip
+
+  \uncover<6>
+  {
+    \begin{alertblock}{Ce que n'est pas ce papier}
+      \begin{itemize}
+      \item Un début d'IA jouant à StarCraft basé sur du deep learning (holistique).
+      \end{itemize}
+    \end{alertblock}
+  }
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges de la micro-gestion dans StarCraft}
+
+  \begin{textblock*}{8cm}(0cm, -2.5cm)
+    \includegraphics[width=\linewidth]{./figs/atari}
+  \end{textblock*}
+
+  \begin{textblock*}{8cm}(3cm, -0.5cm)
+    \includegraphics[width=\linewidth]{./figs/minecraft}
+  \end{textblock*}
+
+  \begin{textblock*}{2cm}(8.3cm, -2.3cm)
+    {\huge Atari}
+  \end{textblock*}
+
+  \begin{textblock*}{2cm}(0cm, 3.5cm)
+    {\huge Minecraft}
+  \end{textblock*}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges de la micro-gestion dans StarCraft}
+
+  \begin{alertblock}{Contrôle de plusieurs agents en même temps}
+    \begin{itemize}
+    \item Actions duratives et interdépendantes.
+    \item Évaluation plus chaotique des stratégies.
+    \end{itemize}
+  \end{alertblock}
+  
+  \centerline{\includegraphics[width=0.7\linewidth]{./figs/starcraft_group}}  
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Challenges de la micro-gestion dans StarCraft}
+
+  \begin{alertblock}{Explorer en tirant au hasard une action casse tout équilibre}
+    \begin{itemize}
+    \item Désorganisation des agents.
+    \item Défaite assuré dont aucune leçon ne peut être tirée.
+    \end{itemize}
+  \end{alertblock}
+
+  \centerline{\includegraphics[width=0.7\linewidth]{./figs/starcraft_squad}}  
+    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Scénarii de micro-gestion}
+
+\begin{frame}
+  \frametitle{Scénarii de micro-gestion}
+
+  \begin{textblock*}{5cm}(0cm, -3cm)
+    \includegraphics[width=\linewidth]{./figs/starcraft_m5v5}
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(6cm, -3cm)
+    \includegraphics[width=0.9\linewidth]{./figs/starcraft_m15v16}
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(0cm, 1cm)
+    \includegraphics[width=\linewidth]{./figs/starcraft_w15v17}
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(6cm, 1cm)
+    \includegraphics[width=0.9\linewidth]{./figs/starcraft_mix_dragoon_zealot}
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(0cm, 0cm)
+    5 marines vs 5 (m5v5)
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(6cm, 0cm)
+    15 marines vs 16 (m15v16)
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(0cm, 3.5cm)
+    15 wraith vs 17 (w15v17)
+  \end{textblock*}
+
+  \begin{textblock*}{5cm}(6cm, 3.8cm)
+    mix 3 zealots + 2 dragoons
+  \end{textblock*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Algos d'apprentissage par renforcement}
+
+\begin{frame}
+  \frametitle{Le modèle MDP de base}
+
+  \begin{textblock*}{8.25cm}(1.3cm, -2cm)
+    \centerline{\def\svgwidth{\columnwidth}\input{figs/chaine_markov.tex}}
+  \end{textblock*}
+
+  \begin{textblock*}{8.25cm}(1.3cm, 1cm)
+    \begin{block}{À chaque instant $t$}
+      \begin{itemize}
+      \item À l'état $s^t$, ``choisir'' l'action $a^t$.
+      \item Aller à l'état $s^{t+1}$ avec la récompense $r^t$
+      \end{itemize}
+    \end{block}
+  \end{textblock*}
+
+  % \centerline{\includegraphics[width=0.9\linewidth]{./figs/mdp}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Le modèle MDP greedy}
+
+  \begin{textblock*}{11cm}(0cm, -3cm)
+    \centerline{\includegraphics[width=0.9\linewidth]{./figs/chaine_markov_greedy.png}}
+  \end{textblock*}
+  
+  \begin{textblock*}{11cm}(0cm, 1.5cm)
+    \begin{exampleblock}{À chaque instant $t$}
+      \begin{itemize}
+      \item Créer autant d'états intermédiaires que d'unités.
+      \item Chaque unité tour à tour ``choisit'' une action.
+      \item Quand la dernière joue, aller à l'état suivant et recevoir
+        la récompense.
+      \end{itemize}
+    \end{exampleblock}
+  \end{textblock*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Algorithmes d'apprentissage par renforcement}
+
+  \begin{block}{Q-learning (DQN)}
+    \begin{itemize}
+    \item Off-policy
+    \item Mise à jour des paramètres $\theta$ par descente de gradient :\\
+      \begin{displaymath}
+        \theta_{t+1}    =    \theta_t    +  \eta  \left(r^t    +    \gamma
+          \operatorname*{max}\limits_{a        \in        \mathcal{A}}
+          Q_{\theta_t}(s^{t+1},a)  -  Q_{\theta_t}(s^t,a^t)\right)
+        \nabla_{\theta_t} Q_{\theta_t}(s^t,a^t)
+      \end{displaymath}
+    \item Phase d'entraînement stochastique via $\epsilon$-greedy.
+    \item Phase de test déterministe.
+    \end{itemize}
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Algorithmes d'apprentissage par renforcement}
+
+  \begin{block}{REINFORCE (PG)}
+    \begin{itemize}
+    \item On-policy
+    \item  Apprentissage   sur  les  traces  $(s^t,   a^t,  s^{t+1},
+      r^{t+1})_{t=1,\ldots,T-1}$ générées
+    \item Mise à jour des paramètres $\theta$ par descente de gradient :\\
+      \begin{displaymath}
+        \theta_{k+1}    =   \theta_k    +   \eta    \sum^T_{t=1}   R^t
+        \nabla_{\theta_k} [log\ \pi_{\theta_k}(a^t \mid s^t)]
+      \end{displaymath}
+    \item Gibbs policy :
+      \begin{displaymath}
+        \pi_\theta(a              \mid               s)              =
+        \frac{exp(\phi_\theta(a,s)/\tau)}{\sum_{b \in \mathcal{A}(s)}exp(\phi_\theta(b,s)/\tau)}
+      \end{displaymath}
+    \item $\phi_\theta$ est le réseau de neurones de paramètres $\theta$.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{De l'apprentissage par renforcement sans gradient ?}
+
+  \begin{block}{{\it Gradient-free} en mode brutasse}
+    \begin{itemize}
+    \item Soit une politique déterministe.
+    \item Soit $R(\theta)$ sa récompense cumulative.
+    \item Optimisation stochastique {\it gradient-free} :
+      \begin{displaymath}
+        \theta_{k+1} = \theta_k + \eta_k R(\theta_k + \delta u_k) u_k
+      \end{displaymath}
+      avec $u_k$ un vecteur random sur la sphère unité.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{L'intuition derrière une optimisation {\it gradient-free}}
+
+  \begin{exampleblock}{L'idée}
+    \begin{itemize}
+    \item  Sans  aléatoire,  pas   d'exploration  avec  une  politique
+      déterministe.
+    \item On  ajoute donc  du bruit $\delta  u_k$ dans  les paramètres
+      $\theta$.
+    \end{itemize}    
+  \end{exampleblock}
+
+  \uncover<2->
+  {
+    \begin{block}{Passage d'un problème d'exploration à un autre}
+      Espace d'action $\Rightarrow$ Espace de politique
+    \end{block}
+  }
+  
+  \uncover<3>
+  {
+    \begin{alertblock}{Problème}
+      \begin{itemize}
+      \item Dans  un deep NN,  il y a trop  de paramètres $\theta$  : ce
+        n'est pas gérable !
+      \item Donc on ne fait ça que pour la dernière couche du NN.
+      \end{itemize}    
+    \end{alertblock}
+  }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Features et modèle}
+
+\begin{frame}
+  \frametitle{Le modèle}
+
+  \begin{block}{Les inputs}
+    \begin{itemize}
+    \item Matrice où chaque ligne représente une unité.
+    \item 17 features par unité : camp, type, HP, $\ldots$ + 9 distances
+    \end{itemize}
+  \end{block}
+  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Le modèle}
+
+  \centerline{\includegraphics[width=\linewidth]{./figs/model2}}  
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Backprop et zero-order gradient}
+
+\begin{frame}
+  \frametitle{Backprop et zero-order gradient}
+
+  \begin{block}{Paramètres ($\theta$, w)}
+    Deux types de paramètres :
+    \begin{itemize}
+    \item $\theta$ pour le NN (50k),
+    \item w pour la dernière couche (100).
+    \end{itemize}
+  \end{block}
+  
+  \bigskip
+
+  \begin{exampleblock}{Zero-order backprop (ZO)}
+    \begin{itemize}
+    \item Zero-order: $w_{k+1} = w_k + \frac{R}{t}u_k$
+    \item    Backprop   :    $\theta_{k+1}   =    \theta_k   +  backprop_{\phi_{\theta_k}}\left(\frac{R}{t}u_k \odot sign\ \frac{w}{\phi_{\theta_k}(s^t,a^t)}\right)$
+    \end{itemize}
+  \end{exampleblock}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Intuitivement}
+
+  \centerline{\includegraphics[width=\linewidth]{./figs/mise_a_jour}}  
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Résultats expérimentaux}
+
+\begin{frame}
+  \frametitle{Résultats expérimentaux}
+
+  \centerline{\includegraphics[width=1.1\linewidth]{./figs/results_fig}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Résultats expérimentaux}
+
+  \centerline{\includegraphics[width=1.1\linewidth]{./figs/results_tab1}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Résultats expérimentaux}
+
+  \centerline{\includegraphics[width=0.7\linewidth]{./figs/results_tab2}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+  \frametitle{Résultats expérimentaux}
+
+  \centerline{\includegraphics[width=1.1\linewidth]{./figs/winrate}}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Perspectives}
+
+\begin{frame}
+  \frametitle{Perspectives}
+
+  \begin{exampleblock}{}
+    \begin{itemize}
+    \item ConvNet 2D pour apprendre les formes.
+      \medskip
+    \item Fusion de RL et d'exemples humains.
+      \medskip
+    \item Hierarchical  RL  pour   apprendre  des  concepts  (fuites, $\ldots$)
+    \end{itemize}
+  \end{exampleblock}
+  
+\end{frame}
+
+
+\end{document}
