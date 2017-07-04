@@ -1,0 +1,363 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Generative Adversarial Networks, un nouveau paradigme pour
+      l'entraînement d'ANN</title>
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/night.css">
+
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+	<section>
+          <section>
+            <h2>Generative Adversarial Networks</h2>
+            <p class="text-left">
+              <span class="text-muted">For the</span> Nantes Machine Learning Meetup<br>
+              <span class="text-muted">By</span> Hugo Mougard<br>
+              <span class="text-muted">On</span> July, 3
+            <p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Paper</h2>
+            <dl>
+              <dt>Title</dt>
+              <dd>Generative Adversarial Nets</dd>
+              <dt>Authors</dt>
+              <dd>Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza,
+              Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron
+                Courville and Yoshua Bengio</dd>
+              <dt>Conference</dt>
+              <dd>NIPS 2014</dd>
+              <dt>Citations</dt>
+              <dd>872</dd>
+            </dl>
+          </section>
+        </section>
+	<section>
+          <section>
+            <h1>Overview</h1>
+            <ul style="list-style-type: none;">
+              <li class="fragment highlight-green">Concept</li>
+              <li>Implementation example</li>
+              <li>Extensions</li>
+            </ul>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>What we'll talk about</h2>
+            <p>Generative networks. Trained on unlabelled data. Useful
+              to build priors (ie word2vec).</p>
+            <blockquote>
+              “What I cannot create, I do not understand.”
+              <footer>Richard Feynman</footer>
+            </blockquote>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Applied to images</h2>
+            <img class="stretch" src="img/rooms.png"></img>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Applied to text</h2>
+            <pre data-trim data-noescape>
+              Busino game camperate spent odea
+              In the bankaway of smarling the
+              SingersMay , who kill that imvic
+              Keray Pents of the same Reagun D
+              Manging include a tudancs shat "
+              His Zuith Dudget , the Denmbern
+              In during the Uitational questio
+              Divos from The ’ noth ronkies of
+              She like Monday , of macunsuer S
+              Solice Norkedin pring in since
+              ThiS record ( 31. ) UBS ) and Ch
+              It was not the annuas were plogr
+              This will be us , the ect of DAN
+              These leaded as most-worsd p2 a0
+              The time I paidOa South Cubry i
+              Dour Fraps higs it was these del
+              This year out howneed allowed lo
+              Kaulna Seto consficutes to repor</pre>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>How it used to be done</h2>
+            <ol>
+              <li>Conceive a generator network (CNN, RNN, …)</li>
+              <li class="fragment highlight-red">Craft a
+                problem-dependent loss function</li>
+              <li>…</li>
+              <li>Profit<span class="fragment fade">?</span></li>
+            </ol>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>GANs</h2>
+            <p>Generative Adversarial Networks use a network instead
+              of a problem-specific loss.</p>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>GANs</h2>
+            <img class="stretch" src="img/gans.svg">
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Training</h2>
+            <p>Minimax: train the two networks by maximizing opposite
+              objectives</p>
+            <ol>
+              <li>maximize the efficiency of the discriminator given
+                the data</li>
+              <li>maximize the errors of the discriminator on
+                generated data</li>
+              <li>goto 1.</li>
+            </ol>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Discriminator training</h2>
+            $$
+            \underset{D}{\max}
+            \underset{\mathcal{x \sim P_\mathcal{r}}}{\mathbb{E}}
+            \left[\log\left(D(\mathcal{x})\right)\right]
+            +
+            \underset{\mathcal{\tilde{x} \sim P_\mathcal{g}}}{\mathbb{E}}
+            \left[\log\left(1 - D(\mathcal{\tilde{x}})\right)\right]
+            $$
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Discriminator training</h2>
+            $$
+            \underset{D}{\max}
+            \color{red}{
+            \underset{\mathcal{x \sim P_\mathcal{r}}}{\mathbb{E}}
+            \left[\log\left(D(\mathcal{x})\right)\right]
+            }
+            +
+            \underset{\mathcal{\tilde{x} \sim P_\mathcal{g}}}{\mathbb{E}}
+            \left[\log\left(1 - D(\mathcal{\tilde{x}})\right)\right]
+            $$
+            <p>Maximize the probability $D(\mathcal{x})$ when
+              the input is real data.</p>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Discriminator training</h2>
+            $$
+            \underset{D}{\max}
+            \underset{\mathcal{x \sim P_\mathcal{r}}}{\mathbb{E}}
+            \left[\log\left(D(\mathcal{x})\right)\right]
+            +
+            \color{red}{
+            \underset{\mathcal{\tilde{x} \sim P_\mathcal{g}}}{\mathbb{E}}
+            \left[\log\left(1 - D(\mathcal{\tilde{x}})\right)\right]
+            }
+            $$
+            <p>Minimize the probability $D(\mathcal{\tilde{x}})$
+              ($\max$ of $1 - p$) when the input is generated.</p>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Generator training</h2>
+            $$
+            \underset{G}{\min}
+            \underset{\mathcal{x \sim P_\mathcal{g}}}{\mathbb{E}}
+            \left[\log\left(1 - D(\mathcal{\tilde{x}})\right)\right]
+            $$
+            <p>Maximize the probability $D(\mathcal{\tilde{x}})$
+              ($\max$ of $1 - p$) when the input is generated.</p>
+          </section>
+          <section>
+            <h5>Concept</h5>
+            <h2>Convergence</h2>
+            <img class="stretch" src="img/convergence.png">
+          </section>
+          <section>
+            <h2>Final formulation</h2>
+            $$
+            \underset{G}{\min}
+            \underset{D}{\max}
+            \underset{\mathcal{x \sim P_\mathcal{r}}}{\mathbb{E}}
+            \left[\log\left(D(\mathcal{x})\right)\right]
+            +
+            \underset{\mathcal{x \sim P_\mathcal{g}}}{\mathbb{E}}
+            \left[\log\left(1 - D(\mathcal{\tilde{x}})\right)\right]
+            $$
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Overview</h1>
+            <ul style="list-style-type: none;">
+              <li>Concept</li>
+              <li class="fragment highlight-green">Implementation example</li>
+              <li>Extensions</li>
+            </ul>
+          </section>
+          <section>
+            <h5>Implementation example</h5>
+            <h2>DCGAN</h2>
+            <dl>
+              <dt>Title</dt>
+              <dd>Unsupervised representation learning with deep
+                convolutional GANs</dd>
+              <dt>Authors</dt>
+              <dd>Alec Radford, Luke Metz and Soumith Chintala</dd>
+              <dt>Conference</dt>
+              <dd>ICLR 2015</dd>
+              <dt>Citations</dt>
+              <dd>415</dd>
+            </dl>
+          </section>
+          <section>
+            <h5>Implementation example</h5>
+            <h2>DCGAN</h2>
+            <p>Let's have a look at the <a href="pages/dcgan.html"
+                target="_blank">DCGAN Torch code</a>.</p>
+          </section>
+          <section>
+            <h5>Implementation example</h5>
+            <h2>DCGAN</h2>
+            <img class="stretch" src="img/vector-arithmetic.png">
+          </section>
+        </section>
+        <section>
+          <section>
+            <h1>Overview</h1>
+            <ul style="list-style-type: none;">
+              <li>Concept</li>
+              <li>Implementation example</li>
+              <li class="fragment highlight-green">Extensions</li>
+            </ul>
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Wasserstein GANs</h2>
+            <p>GANs are extremely <a href="pages/gan-hacks.html"
+                target="_blank">hard to train</a>. WGANs fix that.</p>
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Wasserstein GANs</h2>
+            <p>Change the role of the discriminator:</p>
+            <dl>
+              <dt>Before</dt>
+              <dd>Output a probability of the data being real</dd>
+              <dt>After</dt>
+              <dd>Output a scalar representing how much the fake data
+                distribution has to change to match the real one.</dd>
+            </dl>
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Wasserstein GANs</h2>
+            <img class="stretch" src="img/wgan.png">
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Adversarially Learned Inference</h2>
+            <p>Add an encoder from input to code to be able to query
+              the generator.</p>
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Adversarially Learned Inference</h2>
+            <img class="stretch" src="img/ali.png">
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Adversarially Learned Inference</h2>
+            <p>The discriminator now distinguishes between couples
+              $(x, z)$.</p>
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Invertible Conditional GANs</h2>
+            <img class="stretch" src="img/icgan.png">
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Invertible Conditional GANs</h2>
+            <img class="stretch" src="img/cgan.png">
+          </section>
+          <section>
+            <h5>Extensions</h5>
+            <h2>Improved Training of WGANs</h2>
+            <p>Minor tweak on WGANs that allowed very easy training of
+              GANs in multiple domains (text, image, …)</p>
+          </section>
+        </section>
+        <section>
+          <h1>Conclusion</h1>
+          <ul>
+            <li>Very promising paradigm</li>
+            <li>Results in very good priors</li>
+            <li>Becoming easier and easier to train</li>
+            <li>Not limited to images and toy data anymore</li>
+          </ul>
+        </section>
+        <section data-background="black">
+          <h2><span style="color: white;">Thank</span>
+            <span style="color: gold;">you</span>
+            <span style="color: pink;">very</span>
+            <span style="color: red;">much</span>
+            <span style="color: yellow;">for</span>
+            <span style="color: green;">your</span>
+            <span style="color: orange;">attention</span>
+            <br><span class="text-primary">😍</span></h2>
+        </section>
+        <section>
+          <section data-state="cobalt">
+            <h1>Discussion time!</h1>
+          </section>
+        </section>
+      </div>
+    </div>
+    
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+      slideNumber: true,
+      transition: 'none',
+      dependencies: [
+      { src: 'plugin/math/math.js', async: true },
+      { src: 'plugin/markdown/marked.js' },
+      { src: 'plugin/markdown/markdown.js' },
+      { src: 'plugin/notes/notes.js', async: true },
+      { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+      ]
+      });
+    </script>
+  </body>
+</html>
