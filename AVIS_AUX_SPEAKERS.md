@@ -1,26 +1,26 @@
 # Avis au speakers
 
-Merci d'être intervenant au Nantes ML Meetup.  Ce document offre
-quelques conseils pratique.  (Si un élément manque ou pourrait être
-améliorer, n'hésitez surtout pas à le signaler.)
+Merci d'être intervenant⋅e au Nantes ML Meetup.  Ce document offre
+quelques conseils pratiques.  (Si des éléments manquent ou pourraient
+être améliorés, n'hésitez surtout pas à le signaler.)
 
-Le NMLM vise un niveau technique plutôt avancé.  C'est raisonnable à
+Le NMLM vise un niveau technique plutôt avancé.  Il est raisonnable de
 supposer que toute personne dans la salle aura au moins la
-sophistication d'un bon étudiant qui termine son M2.  (Comme toute
-supposition, elle est fausse mais peut servir nonobstant.)  Autrement
-dit, préparez votre présentation sans vulgarisation, comme pour une
-colloq, sans peur des maths, mais sachant que, quelque soit le niveau
-devant vous, il y a également une hétérogénéité importante.
-L'apprentissage automatique est un sujet vaste qui s'approche de
-plusieurs angles.
+sophistication d'un⋅e bon⋅ne étudiant⋅e qui termine son M2 (comme
+toute supposition, elle est fausse mais peut servir nonobstant).
+Autrement dit, préparez votre présentation sans vulgarisation, comme
+pour une conférence, sans peur des maths, mais sachant que, quelque
+soit le niveau devant vous, il y a également une hétérogénéïté
+importante.  L'apprentissage automatique est un sujet vaste qui
+s'approche de plusieurs angles.
 
 Normalement, on vous demandera une copie de vos diapos après la
-présentation.  La présentation sera typiquement enregistrer.  Si l'un
-ou l'autre pose un problème, n'hésitez pas à le signaler en avance.
-(Généralement, si les diapos contiennent des informations que vous ne
-voulez pas diffuser sur github, c'est toutefois possible de les
-modifier légèrement afin d'enlever la partie qui gène, ce qui est
-meilleur d'une absence totale pour ceux qui n'étaient pas présents.)
+présentation.  La présentation sera typiquement enregistrée.  Si l'un
+ou l'autre de ces points pose problème, n'hésitez pas à le signaler en
+avance (généralement, si les diapos contiennent des informations que
+vous ne voulez pas diffuser sur github, il est toutefois possible de
+les modifier légèrement afin d'enlever la partie qui gêne, ce qui est
+meilleur qu'une absence totale pour ceux qui n'étaient pas présents.)
 
 
 # Guidance for speakers
