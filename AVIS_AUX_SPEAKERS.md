@@ -1,4 +1,4 @@
-# Avis au speakers
+# Avis aux intervenant⋅e⋅s
 
 Merci d'être intervenant⋅e au Nantes ML Meetup.  Ce document offre
 quelques conseils pratiques.  (Si des éléments manquent ou pourraient
