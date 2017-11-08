@@ -45,3 +45,7 @@ M. Henaff, Y. LeCun et al., “Tracking the world state with recurrent entity ne
 A. Kumar et al., “Ask me anything: Dynamic memory networks for natural language processing”, International Conference on Machine Learning, pp. 1378–1387, 2016. ( https://arxiv.org/pdf/1506.07285.pdf )
 
 S. Sukhbaatar, J. Weston et al., “End-to-end memory networks”, Advances in neural information processing systems, pp. 2440–2448, 2015. ( https://arxiv.org/pdf/1503.08895.pdf )
+
+## Video
+
+[ici](https://www.youtube.com/watch?v=xdRLHKylRTc&feature=youtu.be)
