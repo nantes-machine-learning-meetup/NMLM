@@ -21,3 +21,7 @@ cameras.
 ## Suggestions de lecture 
 
 None
+
+## Video
+
+[Disponible](https://youtu.be/viyH6_xINlY) sur le youtube du meetup.
