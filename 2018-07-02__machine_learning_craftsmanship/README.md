@@ -22,6 +22,6 @@ cameras.
 
 None
 
-## Video
+## Vidéo
 
 [Disponible](https://youtu.be/viyH6_xINlY) sur le youtube du meetup.
