@@ -1,6 +1,6 @@
 # TensorFlow.js
 
-Slides should be viewed online: [link](http://vmarkovtsev.github.io/tfjs-2018-nante), the enclosed PDF is for printing.
+Slides should be viewed online: [link](http://vmarkovtsev.github.io/tfjs-2018-nantes), the enclosed PDF is for printing.
 
 Docker container used for the demo 2: [link](https://hub.docker.com/r/vmarkovtsev/tfjs/).
 
