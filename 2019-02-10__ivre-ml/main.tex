@@ -1,0 +1,559 @@
+\documentclass[10pt]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+
+\metroset{%
+  block=fill,%
+  background=dark,%
+  titleformat title=smallcaps,%
+  titleformat subtitle=smallcaps,%
+  titleformat section=smallcaps,%
+  titleformat frame=smallcaps%
+}
+
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{tikzsymbols}
+\usepackage[numbers]{natbib}
+\usepackage[francais]{babel}
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg,.jpeg}
+\graphicspath{{./img/}}
+
+\hypersetup{%
+  colorlinks=true,%
+  linkcolor=white,%
+  urlcolor=cyan%
+}
+
+\newcommand{\imgtw}[2][1]{%
+  \begin{figure}%
+    \centering%
+    \includegraphics[width=#1\textwidth]{#2}%
+  \end{figure}%
+}
+\newcommand{\imgth}[2][1]{%
+  \begin{figure}%
+    \centering%
+    \includegraphics[height=#1\textheight]{#2}%
+  \end{figure}%
+}
+\newcommand{\imgcmw}[2]{
+  \begin{figure}%
+    \centering%
+    \includegraphics[width=#1cm]{#2}%
+  \end{figure}%
+}
+\newcommand{\imgcmh}[2]{
+  \begin{figure}%
+    \centering%
+    \includegraphics[height=#1cm]{#2}%
+  \end{figure}%
+}
+\newcommand{\img}[1]{
+  \begin{figure}%
+    \centering%
+    \includegraphics{#1}%
+  \end{figure}%
+}
+
+\title{Ivre, il pratiquait le ML sans recul}
+\subtitle{}
+\date{4 février 2019}
+\author{\textsc{Hugo Mougard}}
+\institute{\textsc{Nantes Machine Learning Meetup}}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}[standout]
+  \frametitle{Avant-propos}
+  Je suis
+
+  \begin{itemize}
+  \item ingé R\&D ML à \href{https://sourced.tech}{source\{d\}}
+  \item co-organisateur de ce meetup
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+  \frametitle{Avant-propos}
+  Je \emph{ne} suis \emph{pas}
+
+  \begin{itemize}
+  \item climatologue
+  \item sociologue
+  \item magistrat
+  \item …
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+  \frametitle{Avant-propos}
+  \onslide<+->{Je reviens de la FOSDEM}\onslide<+->{, en avion
+
+  \vspace{1cm}
+
+  \Walley[4]}
+\end{frame}
+
+\begin{frame}{Plan de la présentation}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+\label{sec:introduction}
+
+\begin{frame}{But}
+  Examiner le ML sous quelques angles critiques
+\end{frame}
+
+\begin{frame}{Quelques points de départ}
+  \begin{itemize}
+  \item Collapsologie
+  \item Rapports du GIEC sur le Climat
+  \item Révélations d'\textsc{Edward Snowden}
+  \item Climat social
+  \item Épisode de \textsc{Data Gueule} \emph{Algocratie}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Collapsologie}
+
+  Étude de l'effondrement de la société thermo-industrielle.
+
+  \href{https://www.meetup.com/Collapsologie-Nantes/}{Meetup} sur
+  Nantes.
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Rapport du GIEC}
+
+  \href{https://www.ipcc.ch/sr15/}{Rapport} spécial sur le
+  réchauffement d'1,5\degres C (2018).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Révélations d'Edward Snowden}
+  \imgth[.7]{edward}
+  Omnipotence de la surveillance (2014).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Climat social}
+
+  Gilets jaunes, optimisation fiscale, augmentation des inégalités, …
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algocratie}
+
+  \imgtw[.5]{algocratie}
+
+  Épisode 84, \href{https://youtu.be/oJHfUv9RIY0?t=524}{\emph{Algocratie}}
+\end{frame}
+
+\section{Le ML est-il important ?}
+\label{sec:le-ml-est-il-important}
+
+\begin{frame}
+  \frametitle{Question}
+  Pour X, Y et Z,
+
+  \vspace{1cm}
+
+  \centering
+  \emph{le ML est-il \alert{vraiment} important ?}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Changeons de perspective historique}
+  Replaçons les algorithmes au centre\footnote{Basé \emph{très
+      vaguement} sur une
+    \href{https://docs.google.com/presentation/d/1XqMVwzmQpQL7gxz-75GYchZ\_BdzBmk2r3-C3NDTHYvQ/edit\#slide=id.g41eb28881a\_0\_16}{présentation}
+    de Thierry Caminel.}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Évolution génétique}
+  \imgth[.5]{ape}
+  Accumulation biochimique des algorithmes (\emph{très} lente).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Histoire}
+  \imgtw[.7]{tool-1}
+  Accumulation culturelle des algorithmes (lente).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Histoire moderne}
+  \imgtw[.7]{tool-2}
+  Accumulation explicite des algorithmes ---~informatique (rapide).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Maintenant}
+  \imgtw[.7]{alphago}
+  Accumulation semi-automatique des algorithmes ---~AI/ML (très rapide).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Peut-être un jour}
+  \imgtw[.9]{hal}
+  Accumulation automatique des algorithmes ---~AGI (quasi instantanée).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Changeons de perspective économique}
+  Capital dominant : algorithmes.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Meilleures valorisations en bourse}
+  \centering
+  \begin{tabular}{rl}
+    \toprule
+    2T 2007          & 2T 2018          \\
+    \midrule
+    PetroChina       & \emph{Apple}     \\
+    Exxon            & \emph{Amazon}    \\
+    GE               & \emph{Google}    \\
+    China~Mobile     & \emph{Microsoft} \\
+    Bank~of~China    & Berkshire        \\
+    \emph{Microsoft} & \emph{Facebook}  \\
+    Gazprom          & \emph{Alibaba}   \\
+    Shell            & \emph{Tenscent}  \\
+    AT\&T            & JP~Morgan        \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Importance du ML}
+  \begin{align*}
+    \text{Algorithmes} & = \text{enjeu majeur}      \\
+    \text{ML}          & = \text{enjeu majeur} \\
+  \end{align*}
+\end{frame}
+
+\section{Coût carbone}
+\label{sec:cout-carbone}
+
+\begin{frame}
+  \frametitle{Impact du ML}
+  Utilisation de l'impact du numérique comme proxy\footnote{Toute
+    cette section est basée sur le \href{https://theshiftproject.org%
+      /wp-content/uploads/2018/10%
+      /2018-10-04_Rapport_Pour-une-sobri\%C3\%A9t\%C3\%A9%
+      -num\%C3\%A9rique_Rapport_The-Shift-Project.pdf}%
+    {Rapport pour une sobritété numérique} de \textsc{The Shift
+      Project}}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Background: plan}
+  \imgtw{plan}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Background: part du numérique}
+  4\% (2\% pour l'aéronautique domestique, 8 pour le parc automobile).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Effet \textsc{YouTube}}
+
+  Impact énergétique de la vue d'une vidéo: \textbf{1500} fois plus grand que la
+  consommation du smartphone
+\end{frame}
+
+\begin{frame} 
+  \frametitle{Effet \textsc{YouTube} ---~\textsc{Google Translate} vu
+    par un utilisateur}
+
+  \imgth[.9]{translate-mobile}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Effet \textsc{YouTube} ---~\textsc{Google Translate} vu
+    par un data scientist}
+
+  \imgtw{datascientist-view}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Effet rebond}
+
+  Accroître le rendement énergétique d'un objet \textbf{augmente} la
+  consommation d’énergie globale dédiée à la fonction technique que
+  remplit cet objet.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coût de production}
+
+  Pour un smartphone, 33 fois supérieur à sa consommation électrique
+  annuelle.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Consommation du numérique en croissance}
+  \imgtw{consumption}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Part du numérique en croissance}
+  \imgtw[.7]{share}
+\end{frame}
+
+
+\section{Technocratie}
+\label{sec:technocratie}
+
+\begin{frame}
+  \frametitle{Mode de gouvernance}
+  \begin{itemize}[<+->]
+  \item par les experts
+  \item méritocratie
+  \item productivité
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Comparatif réducteur, subjectif \& superficiel}
+
+  \begin{figure}
+    \centering
+    \begin{tabular}{lll}
+      \toprule
+                         & Technocracie                   & Démocratie               \\
+      \midrule
+      Question optimisée & Comment                        & Quoi                     \\
+      Décideurs          & Experts                        & Citoyens / représentants \\
+      Valeur optimisée   & Intérêt sectoriel              & Intérêt général          \\
+      \bottomrule
+    \end{tabular}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Exemple}
+  \textsc{NaonedIA}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Rôle du ML en technocratie}
+
+  \imgtw[.7]{sky}
+
+  ML = expert parfait $\rightarrow$ renforcement de la technocratie.
+\end{frame}
+
+\begin{frame}
+  \frametitle{À éviter}
+  \imgtw[.9]{simpson}
+\end{frame}
+
+\section{Asymétrie des acteurs}
+\label{sec:asymetrie-des-acteurs}
+
+\begin{frame}
+  \frametitle{Question}
+  \imgth[.7]{david-goliath}
+  Tous les acteurs peuvent-ils utiliser le ML aussi efficacement ?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Citoyens vs états: sûreté et sécurité}
+
+  Trade-off entre libertés individuelles et contrôle
+  étatique\footnote{Basé sur l'excellent billet de blog de
+    Maître~Eolas
+    \href{http://www.maitre-eolas.fr/post/2015/04/06/Relisons-la-notice}{\emph{Relisons
+        la notice}}.}.
+
+  \begin{description}
+  \item[Sûreté] Protection contre l'état
+  \item[Sécurité] Protection contre les autres citoyens
+  \end{description}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Citoyens vs états: sûreté et sécurité}
+
+  \onslide<+->{Quelques stats sur la NSA}
+
+  \begin{itemize}[<+->]
+  \item $\approx$ 11 milliards en 2013 (Snowden)
+  \item Datacenter en Utah: des Exa-octets en stockage ($10^{18}$
+    octets)
+  \item 30k à 40k employés
+  \end{itemize}
+
+  \onslide<+->{$\rightarrow$ Fort déséquilibre en faveur de la
+    sécurité.}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Citoyens vs états: sûreté et sécurité}
+
+  \onslide<+->{Et en France}
+
+  \begin{itemize}[<+->]
+  \item Installation de boîtes noires chez les FAI
+  \item Renforcement du pouvoir administratif
+  \end{itemize}
+
+  \onslide<+->{$\rightarrow$ En sûreté, recours au ML compliqué}
+\end{frame}
+
+\begin{frame}
+  \frametitle{TPE vs multi-nationales}
+
+  \onslide<+->{Coût d'entrée élevé en ML dû à}
+
+  \begin{itemize}[<+->]
+  \item la force de calcul nécessaire (\textsc{AlphaGo})
+  \item la quantité de données nécessaires (\textsc{Criteo})
+  \item la quantité d'utilisateurs nécessaire (\textsc{Waze})
+  \end{itemize}
+
+  \onslide<+->{$\rightarrow$ Effet monopole accentué.}
+\end{frame}
+
+\section{Biais et ML}
+\label{sec:biais-et-ml}
+
+\begin{frame}
+  \frametitle{Un autre biais}
+
+  \onslide<+->{Dû à l'entraînement depuis les données, risque de
+    biais.}
+
+  \begin{itemize}[<+->]
+  \item pas biais \emph{statistique}
+  \item biais \emph{social}
+  \item possibilité d'être biaisé statistiquement et pas socialement, ou l'inverse.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Reproduction de biais}
+
+  \onslide<+->{Recette classique:}
+
+  \begin{enumerate}[<+->]
+  \item données biaisées $\rightarrow$ modèle biaisé
+  \item modèle biaisé $\rightarrow$ nouvelles données biaisées
+  \item \texttt{goto} 1., potentiellement avec intérêts
+  \item \emph{Profit}. Biais éternel
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Création de biais social}
+
+  \onslide<+->{Cas \textsc{YouTube}}
+
+  \begin{itemize}[<+->]
+  \item optimise le temps passé sur le site
+  \item vidéo polémique $>$ vidéo normale pour ce critère
+  \item biais social énorme vers les complot, Trump, etc, …
+  \end{itemize}
+
+  \onslide<+->{$\rightarrow$ Facteur important de l'élection de Trump.}
+\end{frame}
+
+\section{Pistes d'action}
+\label{sec:piste-d-action}
+
+\begin{frame}
+  \frametitle{Transition numérique sobre}
+  Directement du \href{https://theshiftproject.org%
+    /wp-content/uploads/2018/10%
+    /2018-10-04_Rapport_Pour-une-sobri\%C3\%A9t\%C3\%A9%
+    -num\%C3\%A9rique_Rapport_The-Shift-Project.pdf}{rapport \emph{Pour une
+    sobriété numérique}}:
+  \begin{itemize}[<+->]
+  \item adopter la sobriété numérique comme principe d'action
+  \item accélérer la prise de conscience des impacts environnementaux
+    du numérique
+  \item permettre aux organisations de piloter environnementalement
+    leur transition numérique
+  \item procéder à un bilan carbone des projets numériques
+  \item améliorer la prise en compte des aspects systémiques du
+    numérique dans les secteurs clefs
+  \item mettre en place des mesures à l'échelle européenne
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Prendre conscience du trade-off features/coût
+    écologique}
+  \begin{itemize}[<+->]
+  \item intégrer le coût équivalent carbone comme métrique
+    décisionnelle
+  \item régulièrement, à plusieurs échelles
+  \item en prenant en compte les effets \textsc{YouTube}, rebond, etc
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Prendre conscience du trade-off features/coût
+    écologique}
+
+  \imgth[.9]{do-or-not}
+\end{frame}
+
+\begin{frame}{Serment d'Hippocrate du Data Scientist}
+   \url{https://hippocrate.tech/}
+
+   \pause
+
+   \begin{enumerate}[<+->]
+   \item Intégrité scientifique et rigueur
+   \item Transparence
+   \item Équité
+   \item Respect
+   \item Responsabilité et indépendance
+   \end{enumerate}
+\end{frame}
+
+\begin{frame}{Droit de retrait}
+  Lié à l'indépendance du Serment d'Hippocrate du Data Scientist.
+\end{frame}
+
+\begin{frame}{Lutter contre les biais}
+  Consultation des citoyens, sociologues, magistrats, …
+\end{frame}
+
+\begin{frame}{S'informer, communiquer}
+  Très peu d'infos disponibles encore sur le coût carbone et social du
+  ML.
+\end{frame}
+
+\begin{frame}{Transparence}
+  Communiquer à vos utilisateurs l'impact de votre utilisation du ML.
+\end{frame}
+
+\begin{frame}[standout]
+  Merci pour votre attention !
+\end{frame}
+
+\begin{frame}[standout]
+  Questions / débat time !
+\end{frame}
+
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
