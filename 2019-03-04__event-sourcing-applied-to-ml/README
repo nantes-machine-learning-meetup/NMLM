@@ -1,0 +1,15 @@
+# l'Event Sourcing appliqué au machine learning
+
+## Résumé:
+
+Thomas Pocreau parlera des bénéfices d'une architecture event sourcée comme paradigme permettant de déployer à faible coût et à postériori des systèmes de machine learning.
+Il abordera en particulier, la collecte des métriques, la création d'un jeu de données d'entrainement, la conformité GDPR, la robustesse d'une infrastructure de machine learning et l'intégration des systèmes des ML dans les processus classiques de développement.
+
+## Bio:
+
+Thomas Pocreau est un développeur logiciel qui s'est spécialisé dans la mise en production d'algorithmes complexes et le design de systèmes distribués (principalement en Scala).
+
+## Lecture :
+
+* [rules of ml](http://martin.zinkevich.org/rules_of_ml/rules_of_ml.pdf)
+* [event sourcing pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing)
