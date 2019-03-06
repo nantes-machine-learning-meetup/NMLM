@@ -6,13 +6,15 @@ quelques conseils pratiques.  (Si des éléments manquent ou pourraient
 
 Le NMLM vise un niveau technique plutôt avancé.  Il est raisonnable de
 supposer que toute personne dans la salle aura au moins la
-sophistication d'un⋅e bon⋅ne étudiant⋅e qui termine son M2 (comme
-toute supposition, elle est fausse mais peut servir nonobstant).
+sophistication d'un⋅e bon⋅ne étudiant⋅e qui termine son M2.  (Comme
+toute supposition, elle est fausse mais peut servir nonobstant.)
 Autrement dit, préparez votre présentation sans vulgarisation, comme
 pour une conférence, sans peur des maths, mais sachant que, quelque
 soit le niveau devant vous, il y a également une hétérogénéïté
 importante.  L'apprentissage automatique est un sujet vaste qui
-s'approche de plusieurs angles.
+s'approche de plusieurs angles.  Ceci dit, ça reste une bonne pratique
+d'exposition scientifique de ré-introduire même extrêmement rapidement
+les concepts utilisés.
 
 Normalement, on vous demandera une copie de vos diapos après la
 présentation.  La présentation sera typiquement enregistrée.  Si l'un
@@ -35,7 +37,9 @@ science.  (This assumption is false even if it is ultimately a useful
 fiction.)  In other words, don't dumb it down.  Think a colloquium
 talk.  At the same time, realise that machine learning is a broad
 subject approachable from many angles, and your audience will have
-different expertises than you.
+different expertises than you.  That said, it is nonetheless a good
+practice in scientific presentations very quickly to re-introduce the
+concepts one uses.
 
 We normally ask you for your slides to post here on github for those
 who perhaps missed the talk.  In addition, we record talks when
