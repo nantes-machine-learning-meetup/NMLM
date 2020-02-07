@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>
+      Faisons connaissance avec les Transformeurs&nbsp;: Bert, Albert, Roberta…
+    </title>
+
+    <link rel="stylesheet" href="../reveal.js/css/reset.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css" />
+    <link rel="stylesheet" href="../reveal.js/css/theme/simple.css" />
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/monokai.css" />
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = window.location.search.match(/print-pdf/gi)
+        ? "../reveal.js/css/print/pdf.css"
+        : "../reveal.js/css/print/paper.css";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    </script>
+    <base target="_blank" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!------------------------------------------------------------------->
+        <!-- FRONT SLIDE -->
+        <!------------------------------------------------------------------->
+        <section>
+          <div style="display: none;">
+            $$\DeclareMathOperator*{\argmax}{arg\,max}
+            \newcommand{\r}[1]{\color{red}{#1}}
+            \newcommand{\b}[1]{\color{blue}{#1}} \newcommand{\t}[1]{\text{#1}}$$
+          </div>
+          <h2>Faisons connaissance avec les Transformeurs</h2>
+          <h3>Bert, Albert, Roberta…</h3>
+          <h4>NMLM du 3 février 2020</h4>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- ONLINE SLIDE -->
+        <!------------------------------------------------------------------->
+        <section>
+          <p>Retrouvez cette présentation online :</p>
+          <a href="https://decks.crydee.eu/2020-02-transformers/index.html"
+            >decks.crydee.eu/2020-02-transformers</a
+          >
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- SPEAKER -->
+        <!------------------------------------------------------------------->
+        <section>
+          <h2>Votre speaker</h2>
+          <p>Hugo Mougard, freelance ML</p>
+          <a href="mailto:hugo@mougard.fr"
+            ><i class="far fa-envelope-open"></i
+          ></a>
+          <a href="https://github.com/m09/"><i class="fab fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/hugo-mougard"
+            ><i class="fab fa-linkedin"></i
+          ></a>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- CREDIT -->
+        <!------------------------------------------------------------------->
+        <section>
+          <p>
+            Le matériel qui suit provient en grande partie de l'<strong
+              >excellent</strong
+            >
+            blog de
+            <a href="https://jalammar.github.io/about/">Jay Alammar</a> (<a
+              href="https://twitter.com/jalammar"
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a href="https://www.linkedin.com/in/jalammar"
+              ><i class="fab fa-linkedin"></i></a
+            >).
+          </p>
+          <p><a href="https://jalammar.github.io/">jalammar.github.io</a></p>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- PLAN -->
+        <!------------------------------------------------------------------->
+        <section>
+          <h1>Plan</h1>
+          <ul>
+            <li>Séquence à séquence</li>
+            <li>Pré-entraînement</li>
+            <li>Extensions</li>
+            <li>Transformologie</li>
+            <li>Conclusion</li>
+          </ul>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- SEQ2SEQ -->
+        <!------------------------------------------------------------------->
+        <section>
+          <section>
+            <h1>Séquence vers séquence</h1>
+            <h4>
+              Ou comment on a modélisé $p(\r{t}|\b{s})$ ces dernières décennies
+            </h4>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>Objectif</h2>
+            $$\b{s = [\text{Je}, \text{suis}, \text{un}, \text{geek}]}$$ $$\r{t
+            \in \{[\text{I}, \text{am}, \text{a}, \text{geek}], [\text{I},
+            \text{am}, \text{a}, \text{dragon}]\}}$$ Trouver
+            $\argmax_\color{red}{t} p(\color{red}{t}|\color{blue}{s})$
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq > modèle enroulé</h2>
+            <p>$\b{s}$ est encodé dans un vecteur.</p>
+            <p>Ce vecteur sert à <em>décoder</em> $\r{t}$.</p>
+            <video class="stretch" src="videos/seq2seq_5.mp4" controls></video>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq > modèle déroulé</h2>
+            <video class="stretch" src="videos/seq2seq_6.mp4" controls></video>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq > conclusion</h2>
+            <p>
+              Un seul vecteur pour représenter $\b{s}$, que $\b{s}$ soit&nbsp;:
+            </p>
+            <ul>
+              <li>courte ou longue</li>
+              <li>avec un mot important ou plusieurs</li>
+              <li>facile ou dure à comprendre</li>
+              <li>…</li>
+            </ul>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq + attention</h2>
+            <p>
+              Combinaison des $\b{s_i}$ pour représenter $\b{s}$ à
+              <strong>chaque étape</strong>
+              du decoding.
+            </p>
+            <video class="stretch" src="videos/seq2seq_7.mp4" controls></video>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq + attention</h2>
+            <p>
+              Mécanisme de combinaison des $\b{s_i}$.
+            </p>
+            <video
+              class="stretch"
+              src="videos/attention_process.mp4"
+              controls
+            ></video>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq + attention</h2>
+            <p>
+              Utilisation pendant le decoding.
+            </p>
+            <video
+              class="stretch"
+              src="videos/attention_tensor_dance.mp4"
+              controls
+            ></video>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq + attention > visualisation</h2>
+            <video class="stretch" src="videos/seq2seq_9.mp4" controls></video>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>seq2seq + attention</h2>
+            <ul>
+              <li>
+                meilleure représentation de $\b{s}$ pendant le decoding.
+              </li>
+              <li>
+                même représentation de $\b{s}$ pendant l'encoding.
+              </li>
+              <li>
+                même représentation de $\r{t}$ pendant le decoding.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>Transformeurs</h2>
+            <p>Améliorer ces deux derniers points avec de l'attention.</p>
+            <p>But par rapport à seq2seq :</p>
+            <ul>
+              <li>
+                meilleure représentation de $\b{s}$ pendant le decoding.
+              </li>
+              <li>
+                meilleure représentation de $\b{s}$ pendant l'encoding.
+              </li>
+              <li>
+                meilleure représentation de $\r{t}$ pendant le decoding.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h4>Séquence vers séquence</h4>
+            <h2>Transformeurs</h2>
+            <a href="http://jalammar.github.io/illustrated-transformer/"
+              >The Illustrated Transformer</a
+            >
+          </section>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- PRÉ-ENTRAÎNEMENT -->
+        <!------------------------------------------------------------------->
+        <section>
+          <section>
+            <h1>Pré-entraînement</h1>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>Objectif</h2>
+            <p>
+              Faciliter un entraînement futur avec un premier entraînement&nbsp;
+            </p>
+            <ul>
+              <li>sur beaucoup de données</li>
+              <li>qui «&nbsp;transfère&nbsp;» bien</li>
+            </ul>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>En NLP, généralement&nbsp;:</h2>
+            <dl>
+              <dt>Tâche</dt>
+              <dd>Modèle de langue (prédire le mot suivant)</dd>
+              <dt>Données</dt>
+              <dd>Wikipedia, Common Crawl, …</dd>
+              <dt>Taille</dt>
+              <dd>> 100 Go &lt; 1To</dd>
+            </dl>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>Deux types de modèles de langue</h2>
+            <dl>
+              <dt>Causal</dt>
+              <dd>Prédiction d'un mot à partir des mots d'avant</dd>
+              <dt>Masqué (débruitage)</dt>
+              <dd>Prédiction des mots masqués dans l'input</dd>
+            </dl>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>Modèle de langue causal</h2>
+            <p>
+              Étant donné «&nbsp;I know&nbsp;», prédire le mot suivant
+              («&nbsp;him&nbsp;» par exemple).
+            </p>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>Modèle de langue à masques</h2>
+            <p>
+              Étant donné «&nbsp;I know [MASK].&nbsp;», prédire le mot masqué
+              («&nbsp;Kung-Fu&nbsp;» par exemple).
+            </p>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>Historiquement</h2>
+            <ul>
+              <li>Pré-entraînement seulement sur les word-embeddings</li>
+              <li>Puis sur des RNNs bi-directionnels</li>
+            </ul>
+          </section>
+          <section>
+            <h4>Pré-entraînement</h4>
+            <h2>État de l'art</h2>
+            <a href="http://jalammar.github.io/illustrated-bert/">BERT</a>
+          </section>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- EXTENSIONS -->
+        <!------------------------------------------------------------------->
+        <section>
+          <section>
+            <h1>Extensions</h1>
+          </section>
+          <section>
+            <h3>Extensions</h3>
+            <h1>Taille et performance</h1>
+          </section>
+          <section>
+            <h4>Extensions > Taille et performance</h4>
+            <h2><a href="https://arxiv.org/abs/1909.11942">ALBERT</a></h2>
+            <p>Deux modifications&nbsp;</p>
+            <ul>
+              <li>découplage des états cachés et des embeddings</li>
+              <li>utilisation des mêmes poids dans chaque layer</li>
+            </ul>
+          </section>
+          <section>
+            <h4>Extensions > Taille et performance</h4>
+            <h2><a href="https://arxiv.org/abs/1910.01108">DistilBERT</a></h2>
+            <ul>
+              <li>Entraînement d'un «&nbsp;étudiant&nbsp;»</li>
+              <li>Tâche : reproduire l'output de BERT</li>
+              <li>Seulement la moitié des paramètres</li>
+              <li>97% des performances sur GLUE</li>
+              <li>
+                Signal : les probabilités émises par BERT (et non les labels)
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h3>Extensions</h3>
+            <h1>Entraînement</h1>
+          </section>
+          <section>
+            <h4>Extensions > Entraînement</h4>
+            <h2><a href="https://arxiv.org/abs/1907.11692">RoBERTa</a></h2>
+            <p>Très légères modifications :</p>
+            <ul>
+              <li>Création dynamique des masques d'entraînement</li>
+              <li>Pas de pré-tokenization, 50k sous-mots au lieu de 30k</li>
+              <li>grands batches</li>
+            </ul>
+          </section>
+          <section>
+            <h4>Extensions > Entraînement</h4>
+            <h2><a href="https://arxiv.org/abs/1906.08237">XLNet</a></h2>
+            <p>
+              Modèle de langue causal avec modification de la factorisation de
+              $\r{t}$. Au lieu de&nbsp;:
+            </p>
+            $$p(\r{t}|\b{s}) = \Pi p(\r{t_i} | \r{t_{j < i}}, \b{s})$$
+            <p>L'ordre change à chaque fois.</p>
+          </section>
+          <section>
+            <h4>Extensions > Entraînement</h4>
+            <h2><a href="https://arxiv.org/abs/1906.08237">XLNet</a></h2>
+            <img src="img/factorization-order.png" />
+          </section>
+          <section>
+            <h3>Extensions</h3>
+            <h1>Multilinguisme</h1>
+          </section>
+          <section>
+            <h4>Extensions > Multilinguisme</h4>
+            <h2><a href="https://arxiv.org/abs/1901.07291">XLM</a></h2>
+            <p>
+              Introduit un objectif cross-lingue en plus de modèles
+              monolingues&nbsp;:
+            </p>
+            <img src="img/xlm.png" class="stretch" />
+          </section>
+          <section>
+            <h3>Extensions</h3>
+            <h1>Français</h1>
+          </section>
+          <section>
+            <h4>Extensions > Français</h4>
+            <h2><a href="https://arxiv.org/abs/1912.05372">FlauBERT</a></h2>
+            <ul>
+              <li>Utilise RoBERTa</li>
+              <li>
+                Sur 24 datasets différents (Wikipedia, Common Crawl, WMT19) : 71
+                Go.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h4>Extensions > Français</h4>
+            <h2><a href="https://arxiv.org/abs/1911.03894">CamemBERT</a></h2>
+            <ul>
+              <li>Utilise RoBERTa</li>
+              <li>
+                Sur un sous-ensemble français de Common Crawl (OSCAR) : 138 Go.
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- TRANSFORMOLOGIE -->
+        <!------------------------------------------------------------------->
+        <section>
+          <section>
+            <h1>Transformologie</h1>
+          </section>
+          <section>
+            <h4>Transformologie</h4>
+            <h2>Étude des transformeurs</h2>
+            <p>But : débugger, comprendre, améliorer.</p>
+          </section>
+          <section>
+            <h4>Transformologie</h4>
+            <h3>
+              <a href="https://www.aclweb.org/anthology/P19-1580.pdf"
+                >Analyzing Multi-Head Self-Attention</a
+              >
+            </h3>
+            <p>Trouver la fonction des têtes d'attention&nbsp;:</p>
+            <dl>
+              <dt>Positionnelle</dt>
+              <dd>
+                Regarde > 90% du temps à $p + 1$ ou $p - 1$
+              </dd>
+              <dt>Syntaxique</dt>
+              <dd>
+                Regarde souvent une relation syntaxique
+              </dd>
+              <dt>Sémantique</dt>
+              <dd>
+                Regarde toujours le mot le plus rare
+              </dd>
+            </dl>
+          </section>
+          <section>
+            <h4>Transformologie</h4>
+            <h2>
+              <a href="https://www.aclweb.org/anthology/P19-1580.pdf"
+                >Analyzing Multi-Head Self-Attention</a
+              >
+            </h2>
+            <p>Résultat&nbsp;:</p>
+            <img src="img/head-functions.png" class="stretch" />
+          </section>
+          <section>
+            <h4>Transformologie</h4>
+            <h2>
+              <a href="https://www.aclweb.org/anthology/P19-1580.pdf"
+                >Analyzing Multi-Head Self-Attention</a
+              >
+            </h2>
+            <p>
+              Calcul des têtes syntaxiques par rapport à une baseline&nbsp;:
+            </p>
+            <img src="img/function-baselines.png" class="stretch" />
+          </section>
+          <section>
+            <h4>Transformologie</h4>
+            <h2>
+              <a href="https://www.aclweb.org/anthology/P19-1580.pdf"
+                >Analyzing Multi-Head Self-Attention</a
+              >
+            </h2>
+            <p>
+              Mots rares/têtes sémantiques&nbsp;:
+            </p>
+            <img src="img/rare-words-head.png" class="stretch" />
+          </section>
+          <section>
+            <h4>Transformologie</h4>
+            <h2>Et pour le futur…</h2>
+            <p>
+              Domaine en pleine expansion, but : interprétabilité et
+              compréhension des modèles.
+            </p>
+          </section>
+        </section>
+
+        <!------------------------------------------------------------------->
+        <!-- CONCLUSION -->
+        <!------------------------------------------------------------------->
+        <section>
+          <h1>Conclusion</h1>
+          <ol>
+            <li>
+              Modéliser $p(\r{t}|\b{s})$ plus finement avec les transformeurs
+            </li>
+            <li>Les appliquer au pré-entraînement pour le NLP</li>
+            <li>…</li>
+            <li>Profit</li>
+          </ol>
+        </section>
+
+        <section>
+          <h1>Questions / Discussion</h1>
+        </section>
+      </div>
+    </div>
+
+    <script src="../reveal.js/js/reveal.js"></script>
+
+    <script>
+      Reveal.initialize({
+        slideNumber: true,
+        transition: "none",
+        history: true,
+        dependencies: [
+          { src: "../reveal.js/plugin/highlight/highlight.js", async: true },
+          { src: "../reveal.js/plugin/math/math.js", async: true }
+        ]
+      });
+    </script>
+  </body>
+</html>
