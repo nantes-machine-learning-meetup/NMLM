@@ -1,0 +1,15 @@
+\begin{picture}(0,0)%
+\includegraphics{vector.pdf}%
+\end{picture}%
+\setlength{\unitlength}{4144sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(7249,4030)(418,-4301)
+\put(2761,-4201){\makebox(0,0)[lb]{\smash{{\SetFigFont{17}{20.4}{\rmdefault}{\bfdefault}{\updefault}{\color[rgb]{0,0,0}$w\cdot$ king $- w\cdot$ man $+ w\cdot$ woman}%
+}}}}
+\end{picture}%

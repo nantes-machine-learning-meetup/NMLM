@@ -17,9 +17,14 @@
 \end{frame}
 
 \begin{frame}{Disclaimer}
-  We have 13 minutes for 6 years.
+  \textbf{We have 13 minutes for 6 years.}
 
-  This will simplify quite a lot.  (Maybe too much.)
+  This will simplify quite a lot.  \blue{Maybe too much.  The goal
+    is to trace the evolution of techniques and to give hints about
+    why.}
+
+  \red{I'm trying to avoid the non-essential stuff, like optimisation
+  improvements that aren't core to why the state of the art advanced.}
 
   All the papers are on github.
 \end{frame}
@@ -81,9 +86,13 @@
   \item Want: distortion $\approx$ meaning 
   \end{itemize}
 
-  \only<2->{Mikolov: trade complexity for efficiency $\Rightarrow$ learn bigger datasets}
+  \only<2->{Mikolov: trade complexity for efficiency $\Rightarrow$
+    learn bigger datasets.}
   
   \only<3>{\blue{Uses: search, translation, \dots}}
+
+  \only<3>{\prevwork{Tomas Mikolov et al., Efficient Estimation of Word Representations in
+    Vector Space, ICLR Workshop, 2013.}}
 \end{frame}
 
 \begin{frame}{Word2vec}
@@ -116,11 +125,12 @@
   \begin{itemize}
   \item Magnitude is related to importance
     \begin{itemize}
-    \item Too common rarely learns large magnitude
-    \item Too rare rarely grows large
-    \item So Goldilocks property
+    \item Too common: rarely learns large magnitude
+    \item Too rare: rarely grows large
+    \item So Goldilocks property (mid-range is just right)
     \end{itemize}
-  \only<2>{\item Learns stop words.  Because their contexts are uncorrelated, they optimise near zero.}
+    \only<2>{\item Learns stop words.  Because their contexts are
+      uncorrelated, they optimise near zero.}
   \end{itemize}
 \end{frame}
 
@@ -128,14 +138,23 @@
   How does it work?
 
   \only<1>{
-    It's not a single algorithm:
+    It's not a single algorithm, but presented in multiple variants
+    (``efficiency improvements'').  Two notable elements are
     \begin{itemize}
     \item CBOW (continuous bag-of-words) -- context predicts word
-    \item SGNS (skipgram negative sampling) -- context predicts context
-    \end{itemize}}
+    \item SG (skipgram) -- word predicts context \gray{(SGNS =
+        skipgram  negative sampling)}
+    \end{itemize}
+
+    \bigskip
+    \prevwork{Tomas Mikolov et al., Distributed Representations of Words
+      and Phrases and their Compositionality, NIPS 2013.}
+  }
   \only<2>{
     \begin{itemize}
-    \item SGNS factorises a word-context PMI matrix
+    \item SGNS factorises a word-context PMI matrix \gray{(This is not
+        the most important take-away, but to point out that the
+        mathematical foundations are slowly being understood.)}
     \end{itemize}
 
     \bigskip
@@ -146,41 +165,104 @@
       = \log\left(\frac{\pr{x\mid y}}{\pr{x}}\right)
       = \log\left(\frac{\pr{y\mid x}}{\pr{y}}\right)
     \end{displaymath}
+
+    \bigskip \prevwork{Sanjeev Arora et al., A latent variable model
+      approach to word embeddings, Trans. Assoc. Comput. Linguistics
+      4: 385-399 (2016).}
   }
-  \only<3-4>{
-    Output is a softmax: cost is proportional to number of classes
-    (50K words).
+  \only<3-4>{ Output is a softmax: cost is
+    proportional to number of classes (50K words).
   }
   \only<4>{
-    \blue{Approximate the softmax to reduce cost.}
+
+    \bigskip
+    \blue{Approximate the softmax to reduce cost: \gray{hierarchical
+        softmax: $O(N) \Rightarrow O(\log n)$.}}
+
+    \bigskip
+    \prevwork{Yoav Goldber and Omber Levy, Word2vec Explained, arXiv 2014.}
   }
 \end{frame}
 
 \begin{frame}{Word2vec}
-  The famous ``man : woman as king : queen'' in maths: we're
-  maximising two similarities and minimising a dissimilarity.
-
-  \centerline{\Huge{??}}
+  \only<1>{
+    The famous ``man : woman as king : queen'' in maths: we're
+    maximising two similarities and minimising a dissimilarity.
+  }
+  \only<2>{
+    \resizebox{.9\textwidth}{!}{\input{vector.pdf_t}}
+  }
 \end{frame}
 
 \begin{frame}{Word2vec}
+  More references (hardly exhaustive):
+  \begin{itemize}
+  \item \prevwork{Yann LeCun, Bengio, Hinton, Deep Learning, Nature
+      521, 436--444(2015).}
+  \item \prevwork{Omer Levy and Yoav Goldberg, Neural Word Embedding
+      as Implicit Matrix Factorization, 2014.}
+  \item \prevwork{Omer Levy and Yoav Goldberg, Linguistic Regularities
+      in Sparse and Explicit Word Representations, 2014.}
+  \item \prevwork{Omer Levy et al., A Strong Baseline for Learning
+      Cross-Lingual Word Embeddings from Sentence Alignments, 2017.}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Word2vec}
   Improvements:
   \begin{enumerate}
   \item FastText (Facebook)
-  \item GloVe (``Global Vectors'') % unsupervised, distance \similar
-                                % semantic similarity, training on
-                                % word-word co-occurance matrix --
-                                % global matrix factorisation + local
-                                % context-window methods
-  \item ULMFit (``Universal Language Model Fine Tuning'')
+    \only<1>{
+
+      \bigskip
+      \prevwork{Piotr Bojanowski et al., Enriching Word Vectors
+        with Subword Information, 2017.}
+
+      \bigskip
+      \prevwork{Armand Joulin, Bag of Tricks for Efficient Text
+        Classification, 2016.}
+    }
+    \only<2->{
+    \item GloVe (``Global Vectors'') % unsupervised, distance \similar
+      % semantic similarity, training on
+      % word-word co-occurance matrix --
+      % global matrix factorisation + local
+      % context-window methods
+    }
+    \only<2>{
+      
+      \bigskip
+      \prevwork{Jeffrey Pennington et al., GloVe: Global Vectors for
+        Word Representation, 2014.}
+
+      \bigskip
+      \prevwork{\url{https://nlp.stanford.edu/projects/glove/}}
+    }
+    \only<3->{
+    \item ULMFit (``Universal Language Model Fine Tuning'')
+    }
+    \only<3>{
+      
+      \bigskip
+      \prevwork{Jeremy Howard and Sebastian Ruder, Universal Language
+        Model Fine-tuning for Text Classification, 2018.}
+
+      \bigskip
+      \prevwork{Andrew Dai and Quoc Le, Semi-supervised Sequence
+        Learning, 2015.}  \textit{($\leftarrow$ not ULMFiT, actually)}
+    }
   \end{enumerate}
 
-  Better performance, similar properties.
+  \only<4->{
+    Better performance, similar properties.
+    
+    What NLP last quarter century, just a lot better.
+  }
+  \only<5>{\bigskip\textbf{\red{Don't use any of these, they're obsolete.}}}
+\end{frame}
 
-  What NLP last quarter century, just a lot better.
+\begin{frame}{ELMo}
+  \cimg{../elmo/elmo.jpg}
 \end{frame}
 
 \begin{frame}{ELMo}
@@ -211,7 +293,8 @@
 
   \only<1>{Up to here, similar to Jozfowicz
 
-    \prevwork{Jozfowicz}
+    \prevwork{Rafal Jozfowicz, Exploring the Limits of Language
+      Modeling, 2016.}
   }
   \only<2>{
     \begin{itemize}
@@ -226,15 +309,53 @@
   }
 \end{frame}
 
-\begin{frame}{BERT}
+\begin{frame}{ELMo}
+  \cimghhh{../elmo/2layer-bidir-LSTM.png}
+  \vspace{-5mm}
+  \prevwork{\url{https://www.mihaileric.com/posts/deep-contextualized-word-representations-elmo/}}
+\end{frame}
+
+\begin{frame}{ELMo}
+  \cimghhh{../elmo/transformation.png}
+  \vspace{-15mm}
+  \prevwork{\url{https://www.mihaileric.com/posts/deep-contextualized-word-representations-elmo/}}
+\end{frame}
+
+\begin{frame}{ELMo}
+  See also
   \begin{itemize}
-  \item Builds on ELMo
-  \item Semi-supervised, encoder stack of transformer architecture
-  \item Encoder-decoder: use self-attention to encode and attention to decode
+  \item \prevwork{Matt Gardner et al., AllenNLP: A Deep Semantic
+      Natural Language Processing Platform}
+  \item \prevwork{Yoon Kim, Character-Aware Neural Language Models,
+      2015.}
+  \item \prevwork{Matthew Peters et al., Deep contextualized word
+      representations, 2018.}
+  \item \prevwork{Rupesh Kumar Srivastava et al., Highway Networks, 2015.}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{}
+\begin{frame}{BERT}
+  \cimg{../bert/bert.png}
+\end{frame}
+
+\begin{frame}{BERT}
+  \begin{itemize}
+  \item Builds on ELMo and first GPT
+  \item Encoder-decoder: use self-attention to encode and attention to decode
+  \end{itemize}
+
+  \prevwork{Jacob Devlin et al., BERT: Pre-training of Deep Bidirectional Transformers for
+    Language Understanding, 2019.}
+
+  \prevwork{Ashish Vaswani, Attention is All You Need, 2017.}
+\end{frame}
+
+\begin{frame}{BERT}
+  \cimg{../bert/BERT-example1.jpg}
+\end{frame}
+
+\begin{frame}{BERT}
+  \cimg{../bert/BERT-example2.jpg}
 \end{frame}
 
 \begin{frame}{}
