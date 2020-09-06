@@ -1,0 +1,111 @@
+\mode<presentation>
+{
+  \usetheme{default}
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{footline}[frame number]
+  \setbeamertemplate{items}[circle]
+  \usecolortheme{seahorse}
+}
+
+\author[Abrahamson] {Jeff Abrahamson}
+\date{6 septembre 2020}
+%\institute{}
+
+%\setbeamertemplate{footline}[text line]{%
+%  \parbox{\linewidth}{\vspace*{-8pt}some text\hfill\insertshortauthor\hfill\insertpagenumber}}
+\setbeamertemplate{footline}[text line]{%
+  \parbox{0.8\linewidth}{
+    %\vspace*{-8pt}\insertshorttitle~(\insertshortauthor)
+    \vspace*{-8pt}Copyright 2020 Jeff Abrahamson, for private use by course participants only
+  }
+  \hfill%
+  \parbox{.1\linewidth}{\vspace*{-8pt}{ML Week}}
+  \hfill%
+  \parbox{0.15\linewidth}{
+    \vspace*{-8pt}\raggedleft\insertpagenumber
+  }
+}
+
+\newcommand\cnote[1]{}
+
+\parskip=8 pt
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{amsmath,mathtools}  % Mathtools provides dcase.
+%\usepackage{eulervm}            % Euler VM fonts (for math mode) (but makes \hat not work)
+%\usepackage[scaled]{helvet}
+\usepackage{listings}
+\usepackage{mathabx}            % Provides nicer \land.
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\lstset{ %
+  basicstyle=\small\ttfamily,
+  moredelim=[is][\textcolor{blue}]{|}{|}
+}
+
+\newcommand\topstrut{\rule{0pt}{2.6ex}}
+\newcommand\bottomstrut{\rule[-1.2ex]{0pt}{0pt}}
+\newcommand\doublestrut{\rule[-1.2ex]{0pt}{3.6ex}}
+
+\newcommand\blue[1]{\textcolor{blue}{#1}}
+\newcommand\red[1]{\textcolor{red}{#1}}
+\newcommand\green[1]{\textcolor{green}{#1}}
+\newcommand\gray[1]{\textcolor{gray}{#1}}
+\newcommand\purple[1]{\textcolor{purple}{#1}}
+\newcommand\smallgray[1]{\textcolor{gray}{\footnotesize\it #1}}
+\newcommand\prevwork[1]{\smallgray{#1}}
+\newcommand\solo[1]{\vfill\centerline{#1}}
+\newcommand\soloo[2]{\only<#1>{\solo{#2}}}
+\newcommand\solopb[1]{\vfill\centerline{\parbox{.9\textwidth}{#1}}}
+\newcommand\soloopb[2]{\only<#1>{\solopb{#2}}}
+\newcommand\cimgo[1]{\vfill\centerline{\includegraphics{#1}}\vfill}
+\newcommand\cimgff[1]{\vfill\centerline{\includegraphics[width=1.2\textwidth]{#1}}\vfill}
+\newcommand\cimgf[1]{\vfill\centerline{\includegraphics[width=\textwidth]{#1}}\vfill}
+\newcommand\cimg[1]{\vfill\centerline{\includegraphics[width=.9\textwidth]{#1}}\vfill}
+\newcommand\cimgg[1]{\vfill\centerline{\includegraphics[width=.8\textwidth]{#1}}\vfill}
+\newcommand\cimggg[1]{\vfill\centerline{\includegraphics[width=.7\textwidth]{#1}}\vfill}
+\newcommand\cimgsm[1]{\vfill\centerline{\includegraphics[width=.4\textwidth]{#1}}\vfill}
+\newcommand\cimgt[1]{\centerline{\includegraphics[width=.2\textwidth]{#1}}\vfill}
+\newcommand\cimgh[1]{\vfill\centerline{\includegraphics[height=.9\textheight]{#1}}\vfill}
+\newcommand\cimghh[1]{\vfill\centerline{\includegraphics[height=.8\textheight]{#1}}\vfill}
+\newcommand\cimghhh[1]{\vfill\centerline{\includegraphics[height=.7\textheight]{#1}}\vfill}
+\newcommand\cimghhhh[1]{\vfill\centerline{\includegraphics[height=.6\textheight]{#1}}\vfill}
+
+% The differential in an integral.
+% After a function or a fraction, the \, may not be desired, see \DD.
+% It is as much art, taste, and consistency as norms and science.
+\newcommand\corr[0]{\mathbf{Corr}}
+\newcommand\cov[0]{\mathbf{Cov}}
+\newcommand\D[1]{\,\mathrm{d}{#1}}
+\newcommand\DD[1]{\mathrm{d}{#1}}
+\newcommand\E[0]{\mathbf{E}}
+\newcommand\pr[1]{\mathbf{Pr}(#1)}
+\newcommand\var[0]{\mathbf{Var}}
+\newcommand\N[0]{\mathcal{N}}
+\newcommand\R[0]{\mathbb{R}}
+
+% Only useful in beamer.
+\newcommand\talksection[1]{\section{#1}
+\begin{frame}
+  \vfill
+  \Huge\bf\blue{\centerline{#1}}
+  \vfill
+\end{frame}
+}
+
+\newcommand\notetitle[2]{\centerline{\large ML Week \hspace{3mm} 0x#1 \hspace{2mm}  #2}\vspace{10mm}}
+\newcommand\phrase[1]{\vspace{1cm}\centerline{\large\bf\blue{#1}}}
+\newcommand\vphrase[1]{\vfill\centerline{\large\bf\blue{#1}}\vfill}
+\newcommand\sphrase[1]{\vspace{1cm}\centerline{\large\blue{#1}}}
+\newenvironment{bphrase}
+  {\blue\bgroup}
+  {\egroup}
+\newenvironment{mphrase}
+  {\begin{displaymath}\blue\bgroup}
+  {\egroup\end{displaymath}}

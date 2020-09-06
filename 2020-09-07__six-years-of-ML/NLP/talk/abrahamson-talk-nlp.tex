@@ -1,0 +1,274 @@
+\documentclass[t,aspectratio=169]{beamer}
+
+\input preamble
+
+\title
+{NMLM}
+\subtitle{NLP}
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+%\beamerdefaultoverlayspecification{<+->}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Disclaimer}
+  We have 13 minutes for 6 years.
+
+  This will simplify quite a lot.  (Maybe too much.)
+
+  All the papers are on github.
+\end{frame}
+
+\begin{frame}{Overview}
+  What's changed:
+  \begin{itemize}
+  \item (Much) better performance
+  \item Polysemy
+  \item Pre-trained models
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Overview}
+  \begin{itemize}
+  \item $\le 2014$
+  \item 2014: word2vec and improvements
+  \item 2018: ELMo
+  \item 2019: BERT
+  \item 2018--2020: GPT
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Overview}
+  Pre-trained models:
+  \begin{itemize}
+  \item Context-free \gray{(word2vec, FastText, GloVe)}
+  \item Contextual
+    \begin{itemize}
+    \item Unidirectional \gray{(ELMo (I think))}
+    \item Bidirectional \gray{(BERT, GPT-2,3 (I think))}
+    \end{itemize}
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Before 2014}
+  TF-IDF (classic example)
+
+  \begin{itemize}
+  \item 1-hot encoding to get high-dimensional vectors
+  \item TF-IDF to scale (weight)
+  \item PCA or t-SNE etc. (if we want lower dimensionality)
+  \end{itemize}
+
+  \only<2>{\blue{
+  What do we have?
+  \begin{itemize}
+  \item \blue{A space of likely significant words.}
+  \item \blue{Likely no good semantic knowledge.}
+  \end{itemize}
+  }}
+\end{frame}
+
+\begin{frame}{Word2vec}
+  \begin{itemize}
+  \item NN, but not deep: think auto-encoder or RBL
+  \item Train on context: similar context $\Rightarrow$ similar embedding
+  \item Want: distortion $\approx$ meaning 
+  \end{itemize}
+
+  \only<2->{Mikolov: trade complexity for efficiency $\Rightarrow$ learn bigger datasets}
+  
+  \only<3>{\blue{Uses: search, translation, \dots}}
+\end{frame}
+
+\begin{frame}{Word2vec}
+  Encode words at learning time.
+
+  \bigskip
+  \centerline{\red{($\R^N \rightarrow \R^n \quad$ for $N\approx 5\times 10^5$ and $n\approx 300$)}}
+  \bigskip
+
+  Problem: no polysemy
+
+\end{frame}
+
+\begin{frame}{Word2vec}
+  How does it work?
+
+  It's learning, so we're optimising something.  What?
+
+  \only<2>{\bigskip\centerline{\blue{similarity of context}}}
+  \only<3->{\bigskip\centerline{\blue{cosine distance for similar contexts}}}
+
+  \only<4>{ Look at words around the target word.  Think of as an
+    n-gram.  We want words with similar context to project close
+    together, words with different context (ideally) not to.  }
+\end{frame}
+
+\begin{frame}{Word2vec}
+  Interesting properties:
+
+  \begin{itemize}
+  \item Magnitude is related to importance
+    \begin{itemize}
+    \item Too common rarely learns large magnitude
+    \item Too rare rarely grows large
+    \item So Goldilocks property
+    \end{itemize}
+  \only<2>{\item Learns stop words.  Because their contexts are uncorrelated, they optimise near zero.}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Word2vec}
+  How does it work?
+
+  \only<1>{
+    It's not a single algorithm:
+    \begin{itemize}
+    \item CBOW (continuous bag-of-words) -- context predicts word
+    \item SGNS (skipgram negative sampling) -- context predicts context
+    \end{itemize}}
+  \only<2>{
+    \begin{itemize}
+    \item SGNS factorises a word-context PMI matrix
+    \end{itemize}
+
+    \bigskip
+
+    PMI = pointwise mutual information
+    \begin{displaymath}
+      pmi(x;y) = \log\left(\frac{\pr{x,y}}{\pr{x} \,\pr{y}}\right)
+      = \log\left(\frac{\pr{x\mid y}}{\pr{x}}\right)
+      = \log\left(\frac{\pr{y\mid x}}{\pr{y}}\right)
+    \end{displaymath}
+  }
+  \only<3-4>{
+    Output is a softmax: cost is proportional to number of classes
+    (50K words).
+  }
+  \only<4>{
+    \blue{Approximate the softmax to reduce cost.}
+  }
+\end{frame}
+
+\begin{frame}{Word2vec}
+  The famous ``man : woman as king : queen'' in maths: we're
+  maximising two similarities and minimising a dissimilarity.
+
+  \centerline{\Huge{??}}
+\end{frame}
+
+\begin{frame}{Word2vec}
+\end{frame}
+
+\begin{frame}{Word2vec}
+  Improvements:
+  \begin{enumerate}
+  \item FastText (Facebook)
+  \item GloVe (``Global Vectors'') % unsupervised, distance \similar
+                                % semantic similarity, training on
+                                % word-word co-occurance matrix --
+                                % global matrix factorisation + local
+                                % context-window methods
+  \item ULMFit (``Universal Language Model Fine Tuning'')
+  \end{enumerate}
+
+  Better performance, similar properties.
+
+  What NLP last quarter century, just a lot better.
+\end{frame}
+
+\begin{frame}{ELMo}
+  \begin{itemize}
+  \item Encode words before and after \gray{(not just at learning
+      time)}
+    \begin{itemize}
+    \item No: dictionary: map word to vector
+    \item Yes: on the fly, run context through deep network to produce
+      new context
+    \end{itemize}
+  \item Captures linguistic context: polysemy
+  \item Models word use: captures both syntactic and semantic
+    information
+  \item Most tasks better than word2vec and relatives \gray{(question
+    answering, named entity exceptions, sentiment analysis, \dots)}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{ELMo}
+  \begin{itemize}
+  \item Bidirectional LSTM + residual connectors between 1st and
+    second layer
+  \item Character embedding rather than word: helps with
+    out-of-vocabular words
+  \item Convolutional filters instead of n-gram features
+  \end{itemize}
+
+  \only<1>{Up to here, similar to Jozfowicz
+
+    \prevwork{Jozfowicz}
+  }
+  \only<2>{
+    \begin{itemize}
+    \item Learn different representations for different tasks
+    \item Transfer learning
+    \end{itemize}
+
+    \blue{In CV, it's standard to learn ImageNet and transfer to problem at
+    hand.}
+
+    \blue{ELMo shows we can do this for NLP problems.}
+  }
+\end{frame}
+
+\begin{frame}{BERT}
+  \begin{itemize}
+  \item Builds on ELMo
+  \item Semi-supervised, encoder stack of transformer architecture
+  \item Encoder-decoder: use self-attention to encode and attention to decode
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+\begin{frame}{}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\talksection{Break}
+
+\begin{frame}
+  \vphrase{\large Questions?}
+\end{frame}
+
+\end{document}
