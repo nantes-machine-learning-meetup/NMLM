@@ -42,9 +42,16 @@
   \begin{itemize}
   \item $\le 2014$
   \item 2014: word2vec and improvements
+    \only<1>{
   \item 2018: ELMo
   \item 2019: BERT
   \item 2018--2020: GPT
+    }
+    \only<2>{
+  \item \blue{2018: ELMo}
+  \item \blue{2019: BERT}
+  \item \blue{2018--2020: GPT}
+    }
   \end{itemize}
 \end{frame}
 
@@ -57,8 +64,12 @@
     \item Unidirectional \gray{(ELMo (I think))}
     \item Bidirectional \gray{(BERT, GPT-2,3 (I think))}
     \end{itemize}
-
   \end{itemize}
+
+  \vspace{1cm}
+  \gray{\it The literature talks about uni- and bidirectional but isn't
+    clear about which algorithms are which.  This is my
+    interpretation, and I might be wrong.  I'm not an NLP specialist.}
 \end{frame}
 
 \begin{frame}{Before 2014}
@@ -67,16 +78,21 @@
   \begin{itemize}
   \item 1-hot encoding to get high-dimensional vectors
   \item TF-IDF to scale (weight)
-  \item PCA or t-SNE etc. (if we want lower dimensionality)
+  \only<2->{\item PCA or t-SNE etc. (if we want lower dimensionality)}
   \end{itemize}
 
-  \only<2>{\blue{
+  \only<3>{\blue{
   What do we have?
   \begin{itemize}
   \item \blue{A space of likely significant words.}
   \item \blue{Likely no good semantic knowledge.}
   \end{itemize}
-  }}
+}}
+
+\only<1>{
+  \bigskip
+  Goal: classify documents (or phrases).
+  }
 \end{frame}
 
 \begin{frame}{Word2vec}
@@ -89,7 +105,9 @@
   \only<2->{Mikolov: trade complexity for efficiency $\Rightarrow$
     learn bigger datasets.}
   
-  \only<3>{\blue{Uses: search, translation, \dots}}
+  \only<3>{
+    \bigskip
+    \blue{Uses: search, translation, \dots}}
 
   \only<3>{\prevwork{Tomas Mikolov et al., Efficient Estimation of Word Representations in
     Vector Space, ICLR Workshop, 2013.}}
@@ -99,7 +117,9 @@
   Encode words at learning time.
 
   \bigskip
-  \centerline{\red{($\R^N \rightarrow \R^n \quad$ for $N\approx 5\times 10^5$ and $n\approx 300$)}}
+  \centerline{\red{($\R^N \rightarrow \R^n \quad$
+      \hspace{2mm}for $N\approx 5\times 10^5$ 
+      \hspace{2mm}and\hspace{2mm} $n\approx 300$)}}
   \bigskip
 
   Problem: no polysemy
@@ -111,8 +131,8 @@
 
   It's learning, so we're optimising something.  What?
 
-  \only<2>{\bigskip\centerline{\blue{similarity of context}}}
-  \only<3->{\bigskip\centerline{\blue{cosine distance for similar contexts}}}
+  \only<2>{\vspace{7mm}\centerline{\blue{similarity of context}}}
+  \only<3->{\vspace{7mm}\centerline{\blue{cosine distance for similar contexts}}}
 
   \only<4>{ Look at words around the target word.  Think of as an
     n-gram.  We want words with similar context to project close
@@ -129,7 +149,7 @@
     \item Too rare: rarely grows large
     \item So Goldilocks property (mid-range is just right)
     \end{itemize}
-    \only<2>{\item Learns stop words.  Because their contexts are
+    \only<2>{\vspace{2mm}\item \blue{Learns stop words.}  Because their contexts are
       uncorrelated, they optimise near zero.}
   \end{itemize}
 \end{frame}
@@ -139,7 +159,8 @@
 
   \only<1>{
     It's not a single algorithm, but presented in multiple variants
-    (``efficiency improvements'').  Two notable elements are
+    (``efficiency improvements'').  Two notable elements
+    (architectures) are
     \begin{itemize}
     \item CBOW (continuous bag-of-words) -- context predicts word
     \item SG (skipgram) -- word predicts context \gray{(SGNS =
@@ -188,6 +209,9 @@
   \only<1>{
     The famous ``man : woman as king : queen'' in maths: we're
     maximising two similarities and minimising a dissimilarity.
+
+    \bigskip
+    But remember that we're really working with cosine similarity.
   }
   \only<2>{
     \resizebox{.9\textwidth}{!}{\input{vector.pdf_t}}
@@ -258,7 +282,11 @@
     
     What NLP last quarter century, just a lot better.
   }
-  \only<5>{\bigskip\textbf{\red{Don't use any of these, they're obsolete.}}}
+  \only<5>{
+
+    \bigskip
+    \textbf{\red{Don't use any of these, they're obsolete.}}
+  }
 \end{frame}
 
 \begin{frame}{ELMo}
@@ -270,8 +298,8 @@
   \item Encode words before and after \gray{(not just at learning
       time)}
     \begin{itemize}
-    \item No: dictionary: map word to vector
-    \item Yes: on the fly, run context through deep network to produce
+    \item \red{No:} dictionary: map word to vector
+    \item \textbf{Yes:} on the fly, run context through deep network to produce
       new context
     \end{itemize}
   \item Captures linguistic context: polysemy
